@@ -84,6 +84,12 @@ function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
         case `zksync-mainnet`:
             jsonRpcUrl = `https://zksync2-mainnet.zksync.io`;
             break;
+        case `goerli`:
+            jsonRpcUrl = `https://eth-testnet.coincircle.com`;
+            break;
+        case `mainnet`:
+            jsonRpcUrl = `https://eth.coincircle.com`;
+            break;
         default:
             jsonRpcUrl = `https://${chain}.infura.io/v3/${process.env.INFURA_API_KEY}`;
     }

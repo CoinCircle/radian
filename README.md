@@ -1,47 +1,4 @@
-# [Solidity Template](#solidity-template)
-
-<!-- If you want badge for Github Actions & NPM version, uncomment these! -->
-<!-- [![Unit Tests](https://github.com/mattstam/solidity-template/actions/workflows/unit-test.yaml/badge.svg)](https://github.com/mattstam/solidity-template/actions/workflows/unit-test.yaml)
-[![Integration Tests](https://github.com/mattstam/solidity-template/actions/workflows/integration-test.yaml/badge.svg)](https://github.com/mattstam/solidity-template/actions/workflows/integration-test.yaml)
-[![Slither Static Analysis](https://github.com/mattstam/solidity-template/actions/workflows/slither.yaml/badge.svg)](https://github.com/mattstam/solidity-template/actions/workflows/slither.yaml)
-[![Lint](https://github.com/mattstam/solidity-template/actions/workflows/lint.yaml/badge.svg)](https://github.com/mattstam/solidity-template/actions/workflows/lint.yaml)
-[![NPM Version](https://img.shields.io/npm/v/@mattstam/solidity-template/latest.svg)](https://www.npmjs.com/package/@mattstam/solidity-template/v/latest) -->
-
-This is a modern Solidity template for Ethereum smart contracts. It combines two extremely powerful frameworks:
-
-- [Foundry](#foundry) - for Unit tests written in Solidity ([contracts/test/](./contracts/test/)).
-- [Hardhat](#hardhat) - for Integration tests written in Typescript ([integration/](./integration/)).
-
-This template optimizes and cleans up using these frameworks together (e.g. no `remappings.txt` or `/lib` submodules, using one [foundry.toml](./foundry.toml) as a source of truth for options). Dependencies are all managed through [NPM](./package.json).
-
-Utilizing both frameworks allows you to comprehensively test every scenario, which should always be the case when planning to deploy *immutable* code. Both layers of testing also gives other developers a reference for how they should interact with your contracts:
-
-- On-chain developers writing contracts that call these contracts can refer to your [Unit Test files](./contracts/test/) to see the expected usage in [Solidity](https://docs.soliditylang.org/en/latest/).
-
-- Off-chain developers writing clients that call these contracts can refer to your [Integration Test files](./integration/) to see the expected usage in [JavaScript (TypeScript)](https://www.typescriptlang.org/) and [Ethers.js](https://docs.ethers.io/v5/).
-
-These frameworks also offer some advanced tools for contract debugging, deployment, gas measurements, etc.
-
-Other features of this template are linting rules for [Solidity](./.solhint.json) and [TypeScript](./.eslintrc.js), a [developer guide](#developer-guide) for new contributors to your project, a [LICENSE](./LICENSE) sample which can be changed, a sample [CLI](./scripts/console) for contract deployment and interactions, [documentation generation](https://github.com/primitivefinance/primitive-dodoc) from NatSpec comments, and useful [GitHub Actions](#github-actions--workflow-badges) already configured.
-
-&nbsp;
-
-## [Template Usage](#template-usage)
-
-Go to the top right of [this repository](https://github.com/mattstam/solidity-template) and click the big green ["Use this template"](https://github.com/mattstam/solidity-template/generate) button:
-
-[![Use this template](./media/template.png)](https://github.com/mattstam/solidity-template/generate)
-
-Alternatively, you can set this template up through Foundry:
-
-```sh
-forge init --template https://github.com/mattstam/solidity-template <project-name>
-```
-
-This will create a copy of this repository for your project. A sample contract already exists, [Counter.sol](./contracts/Counter.sol), with its interface [ICounter.sol](./contracts/interfaces/ICounter.sol), Unit Test file [Counter.t.sol](./contracts/test/Counter.t.sol), and Integration Test file [counter.test.ts](./integration/counter.test.ts).
-
-
-Use this as the foundation for how to write and test your contracts. Replace these with the contracts you want to build.
+# Radian
 
 ### [GitHub Actions & Workflow Badges](#github-actions--workflow-badges)
 
@@ -61,7 +18,7 @@ If you would like to also get badges for your workflows shown on this README, ju
 
 ### [Cleanup](#cleanup)
 
-To make this specific to your project, just *Find And Replace* all the mentions of `mattstam/solidity-template`, `solidity-template`, and `Solidity Template` with the name of your project name.
+To make this specific to your project, just *Find And Replace* all the mentions of `mattstam/radian`, `radian`, and `Solidity Template` with the name of your project name.
 
 Clear out everything in the [media](./media/) directory, as these images were just use in this README. Use this directory for your own project content instead.
 
@@ -109,7 +66,7 @@ tsconfig.json - "Configure Typescript"
 #### [Clone the repository](#clone-the-repository)
 
 ```sh
-git clone https://github.com/mattstam/solidity-template.git && cd solidity-template
+git clone https://github.com/mattstam/radian.git && cd radian
 ```
 
 #### [Install Node.js / NPM](#install-nodejs--npm)

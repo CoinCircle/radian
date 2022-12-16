@@ -2,7 +2,12 @@
     "deployments": [
         {
             "network": "goerli",
-            "contracts": []
+            "contracts": [
+                {
+                    "name": "Counter",
+                    "address": "0xFf834d3a5Aa4C063A9aE54D52FAd6361Dc77A102"
+                }
+            ]
         }
     ]
 }

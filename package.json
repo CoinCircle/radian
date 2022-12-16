@@ -1,5 +1,5 @@
 {
-    "name": "@mattstam/solidity-template",
+    "name": "@coincircle/radian",
     "version": "0.0.0",
     "description": "A modern Solidity template utilizing Foundry and Hardhat",
     "type": "commonjs",
@@ -23,7 +23,7 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/mattstam/solidity-template.git"
+        "url": "git+https://github.com/coincircle/radian.git"
     },
     "files": [
         "/deployments.json",
