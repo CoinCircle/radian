@@ -36,14 +36,6 @@ tsconfig.json - "Configure Typescript"
 
 --- *(not an extensive list of all files)* ---
 
-&nbsp;
-
-#### [Clone the repository](#clone-the-repository)
-
-```sh
-git clone https://github.com/mattstam/radian.git && cd radian
-```
-
 #### [Install Node.js / NPM](#install-nodejs--npm)
 
 ```sh
