@@ -70,4 +70,10 @@ contract AirdropTest is Test {
         // claim
         airdrop.claimBehalf(to, amount, nonce, abi.encodePacked(r, s, v));
     }
+
+    function testDoubleSpendProtection() public {
+        testClaim();
+        vm.expectRevert();
+        testClaim();
+    }
 }
