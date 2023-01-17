@@ -34,7 +34,7 @@ contract Airdrop {
   ) public {
     require(
       ECDSA.recover(
-        keccak256(abi.encodePacked(msg.sender, _amount, _nonce)),
+        ECDSA.toEthSignedMessageHash(abi.encodePacked(msg.sender, _amount, _nonce)),
         _signature
       ) == owner,
       "Invalid signature"
@@ -52,7 +52,7 @@ contract Airdrop {
   ) public {
     require(
       ECDSA.recover(
-        keccak256(abi.encodePacked(_to, _amount, _nonce)),
+        ECDSA.toEthSignedMessageHash(abi.encodePacked(_to, _amount, _nonce)),
         _signature
       ) == owner,
       "Invalid signature"

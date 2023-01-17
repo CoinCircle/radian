@@ -12,8 +12,8 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20FlashMin
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
-import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
-import "./RadianXToken.sol";
+import { EIP712 } from "./interfaces/EIP712.sol";
+import { RadianX } from "./RadianXToken.sol";
 import "./Collector.sol";
 
 

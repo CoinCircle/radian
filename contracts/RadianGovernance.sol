@@ -10,6 +10,7 @@ import "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorTimelo
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import { ERC20VotesUpgradeable } from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
 
 contract RadianGovernance is Initializable, GovernorUpgradeable, GovernorProposalThresholdUpgradeable, GovernorCountingSimpleUpgradeable, GovernorVotesUpgradeable, GovernorVotesQuorumFractionUpgradeable, GovernorTimelockControlUpgradeable, OwnableUpgradeable, UUPSUpgradeable {
 
@@ -176,7 +177,7 @@ contract RadianGovernance is Initializable, GovernorUpgradeable, GovernorProposa
     function getVotes(address account, uint256 blockNumber)
         public
         view
-        override(IGovernorUpgradeable, GovernorVotesUpgradeable)
+        override(IGovernorUpgradeable, GovernorUpgradeable)
         returns (uint256)
     {
         return super.getVotes(account, blockNumber);

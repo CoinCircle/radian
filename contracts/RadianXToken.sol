@@ -13,7 +13,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 // Radian custom, adds meta-transaction support.
-import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
+import "./interfaces/EIP712.sol";
 
 contract RadianX is
     Initializable,
