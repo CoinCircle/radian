@@ -1,30 +1,5 @@
 # Radian
 
-### [GitHub Actions & Workflow Badges](#github-actions--workflow-badges)
-
-This repository comes with [GitHub Actions](https://github.com/features/actions) already configured. You can find them in the [./github/workflows](./.github/workflows/) directory. These will run the [Unit Tests](./.github/workflows/unit-test.yaml), [Integration Tests](./.github/workflows/integration-test.yaml), [Lint Check](./.github/workflows/lint.yaml), etc, during Pull Requests and merges to the master branch.
-
-All that is required to get theses setup is to include your [`MNEMONIC`](https://metamask.zendesk.com/hc/en-us/articles/360015290032-How-to-reveal-your-Secret-Recovery-Phrase) environmental variable in the settings. In your GitHub repository, go to the `Settings` tab > `Security`/`Secrets`/`Actions` > click the big green "New repository secret" button:
-
-![New repository secret](./media/secret.png)
-
-The *Name* should be `MNEMONIC` and the *Secret* should be your [BIP-39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki) compatible phrase. Afterward you should see:
-
-![MNEMONIC secret](./media/mnemonic.png)
-
-If you would like to also get badges for your workflows shown on this README, just uncomment out the lines at the top of this README:
-
-![badges](./media/badges.png)
-
-### [Cleanup](#cleanup)
-
-To make this specific to your project, just *Find And Replace* all the mentions of `mattstam/radian`, `radian`, and `Solidity Template` with the name of your project name.
-
-Clear out everything in the [media](./media/) directory, as these images were just use in this README. Use this directory for your own project content instead.
-
-Lastly, delete this [Template Usage](#template-usage) block in this README. You probably want to keep everything else, but customize it to your needs.
-
-&nbsp;
 
 ## [Developer Guide](#developer-guide)
 
