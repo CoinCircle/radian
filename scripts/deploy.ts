@@ -1,10 +1,11 @@
 import hre from "hardhat";
 
+import * as zksync from 'zksync-web3';
 import { chainIds, VERBOSE, ZK_EVM } from "../hardhat.config";
-import { Counter, Counter__factory } from "../types";
+import * as Types from "../types";
 import { deployWait } from "./utils";
 import { GasOptions } from "./types";
-import { Wallet } from "ethers";
+import { Wallet, ethers } from "ethers";
 
 import { Deployer as zkDeployer } from "@matterlabs/hardhat-zksync-deploy";
 
@@ -18,12 +19,12 @@ export async function deployCounter(
     wallet: Wallet,
     gasOpts?: GasOptions,
     initCount?: number,
-): Promise<Counter> {
+): Promise<Types.Counter> {
     if (initCount === undefined) {
         initCount = 0;
     }
 
-    let counterContract: Counter;
+    let counterContract: Types.Counter;
     if (await isZkDeployment(wallet)) {
         const deployer = zkDeployer.fromEthWallet(hre, wallet);
         const zkArtifact = await deployer.loadArtifact(`Counter`);
@@ -33,9 +34,12 @@ export async function deployCounter(
                 maxPriorityFeePerGas: gasOpts?.maxPriorityFeePerGas,
                 gasLimit: gasOpts?.gasLimit,
             }),
-        )) as Counter;
+        )) as Types.Counter;
     } else {
-        const counter: Counter__factory = await hre.ethers.getContractFactory(`Counter`, wallet);
+        const counter: Types.Counter__factory = await hre.ethers.getContractFactory(
+            `Counter`,
+            wallet,
+        );
         counterContract = await deployWait(
             counter.deploy(initCount, {
                 maxFeePerGas: gasOpts?.maxFeePerGas,
@@ -49,6 +53,51 @@ export async function deployCounter(
     hre.tracer.nameTags[counterContract.address] = `Counter`;
 
     return counterContract;
+}
+
+// deployWalletFactory deploys the WalletFactory contract.
+export async function deployWalletFactory(
+    wallet: Wallet,
+    gasOpts?: GasOptions,
+): Promise<Types.WalletFactory> {
+    let contract: Types.WalletFactory;
+    if (await isZkDeployment(wallet)) {
+        const deployer = zkDeployer.fromEthWallet(hre, wallet);
+        const zkArtifact = await deployer.loadArtifact(`WalletFactory`);
+        const walletArtifiact = await deployer.loadArtifact(`Wallet`);
+        const bytecodeHash = zksync.utils.hashBytecode(walletArtifiact.bytecode);
+        console.log(`Wallet bytecode hash: ${ethers.utils.hexlify(bytecodeHash)}`);
+        contract = (await deployWait(
+            deployer.deploy(
+                zkArtifact,
+                [bytecodeHash],
+                {
+                    maxFeePerGas: gasOpts?.maxFeePerGas,
+                    maxPriorityFeePerGas: gasOpts?.maxPriorityFeePerGas,
+                    gasLimit: gasOpts?.gasLimit,
+                },
+                [walletArtifiact.bytecode],
+            ),
+        )) as Types.WalletFactory;
+    } else {
+        // This probably won't work on L1
+        const factory: Types.WalletFactory__factory = await hre.ethers.getContractFactory(
+            `WalletFactory`,
+            wallet,
+        );
+        contract = await deployWait(
+            factory.deploy([], {
+                maxFeePerGas: gasOpts?.maxFeePerGas,
+                maxPriorityFeePerGas: gasOpts?.maxPriorityFeePerGas,
+                gasLimit: gasOpts?.gasLimit,
+            }),
+        );
+    }
+
+    if (VERBOSE) console.log(`WalletFactory: ${contract.address}`);
+    hre.tracer.nameTags[contract.address] = `WalletFactory`;
+
+    return contract;
 }
 
 // isZkDeployment returns if ZK_EVM is true and the network is a supported zk rollup.

@@ -1,1 +1,2 @@
 @matterlabs/zksync-contracts/=lib/v2-testnet-contracts/
+@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/

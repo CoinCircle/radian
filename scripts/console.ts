@@ -2,13 +2,14 @@ import { BigNumber, Contract, ContractTransaction, utils, Wallet } from "ethers"
 import * as fs from "fs";
 import { ethers, network } from "hardhat";
 import * as path from "path";
+import * as Types from "../types";
+import * as deploy from "./deploy";
 import { keyInSelect, keyInYNStrict, question } from "readline-sync";
-import { Counter } from "../types";
-import { deployCounter } from "./deploy";
 import { chainIds, explorerUrl, GAS_MODE, UrlType } from "../hardhat.config";
 import { Deployment, DeploymentContract, Deployments, GasOptions } from "./types";
 import { FeeData } from "@ethersproject/providers";
 import { HardhatNetworkHDAccountsConfig } from "hardhat/types";
+import * as zksync from 'zksync-web3';
 
 async function main(wallet?: Wallet, gasOpts?: GasOptions): Promise<void> {
     if (wallet === undefined) {
@@ -20,13 +21,22 @@ async function main(wallet?: Wallet, gasOpts?: GasOptions): Promise<void> {
 
     switch (askForUsage()) {
         case Usage.DEPLOY: {
-            await trackDeployment(() => deployCounter(wallet!, gasOpts, 0), `Counter`);
+            await trackDeployment(() => deploy.deployCounter(wallet!, gasOpts, 0), `Counter`);
+            await trackDeployment(
+                () => deploy.deployWalletFactory(wallet!, gasOpts),
+                `WalletFactory`,
+            );
             void main(wallet, gasOpts);
             break;
         }
         case Usage.CALL: {
-            const addr = askForContract(`Counter`);
-            const counter: Counter = await ethers.getContractAt(`Counter`, addr);
+            const counterAddr = askForContract(`Counter`);
+            const counter: Types.Counter = await ethers.getContractAt(`Counter`, counterAddr);
+            const walletFactoryAddr = askForContract(`WalletFactory`);
+            const walletFactory: Types.WalletFactory = await ethers.getContractAt(
+                `WalletFactory`,
+                walletFactoryAddr,
+            );
 
             let tx: ContractTransaction | undefined = undefined;
             let count: BigNumber;
@@ -53,6 +63,67 @@ async function main(wallet?: Wallet, gasOpts?: GasOptions): Promise<void> {
                         gasLimit: gasOpts?.gasLimit,
                     });
                     break;
+                case `createWallet`: {
+                    const salt = ethers.constants.HashZero;
+                    const owner1 = askForAddress(`owner1`);
+                    const owner2 = askForAddress(`owner2`);
+                    tx = await walletFactory.deployAccount(salt, owner1, owner2, {
+                        maxFeePerGas: gasOpts?.maxFeePerGas,
+                        maxPriorityFeePerGas: gasOpts?.maxPriorityFeePerGas,
+                        gasLimit: gasOpts?.gasLimit,
+                    });
+                    break;
+                }
+                case `sendFromWallet`: {
+                    const owner1 = await askForWallet();
+                    const owner2 = await askForWallet();
+                    const salt = ethers.constants.HashZero;
+                    const abiCoder = new ethers.utils.AbiCoder();
+                    // ✨ Deterministic ✨
+                    const multisigAddress = zksync.utils.create2Address(
+                        walletFactoryAddr,
+                        await walletFactory.aaBytecodeHash(),
+                        salt,
+                        abiCoder.encode([`address`, `address`], [owner1.address, owner2.address]),
+                    );
+                    let aaTx: zksync.types.TransactionRequest =
+                        await walletFactory.populateTransaction.deployAccount(
+                            salt,
+                            owner1.address,
+                            owner2.address,
+                        );
+                    const gasLimit = await wallet.provider.estimateGas(aaTx);
+                    const gasPrice = await wallet.provider.getGasPrice();
+                    aaTx = {
+                        ...aaTx,
+                        from: multisigAddress,
+                        gasLimit,
+                        gasPrice,
+                        chainId: (await wallet.provider.getNetwork()).chainId,
+                        nonce: await wallet.provider.getTransactionCount(multisigAddress),
+                        type: 113,
+                        customData: {
+                          ergsPerPubdata: zksync.utils.DEFAULT_ERGS_PER_PUBDATA_LIMIT,
+                        } as zksync.types.Eip712Meta,
+                        value: ethers.BigNumber.from(0),
+                    };
+                    console.log({ aaTx });
+                    const signedTxHash = zksync.EIP712Signer.getSignedDigest(aaTx);
+                    const signature = ethers.utils.concat([
+                        // Note, that `signMessage` wouldn't work here, since we don't want
+                        // the signed hash to be prefixed with `\x19Ethereum Signed Message:\n`
+                        ethers.utils.joinSignature(owner1._signingKey().signDigest(signedTxHash)),
+                        ethers.utils.joinSignature(owner2._signingKey().signDigest(signedTxHash)),
+                    ]);
+                    aaTx.customData = {
+                        ...aaTx.customData,
+                        customSignature: signature,
+                    };
+                    console.log(`multisig address: ${multisigAddress}`);
+                    const provider = new zksync.Provider('https://zksync2-testnet.zksync.dev')
+                    tx = await provider.sendTransaction(zksync.utils.serialize(aaTx));
+                    break;
+                }
                 default:
                     count = await counter.getCount();
                     console.log(`current count: ${count}`);
