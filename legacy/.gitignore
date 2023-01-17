@@ -1,0 +1,5 @@
+build/
+.idea/
+node_modules
+
+truffle-config.js
