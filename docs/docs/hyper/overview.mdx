@@ -1,0 +1,103 @@
+---
+sidebar_position: 4
+---
+
+# Overview
+
+On Ethereum there are two types of accounts: [externally owned accounts (EOAs)](https://ethereum.org/en/developers/docs/accounts/#externally-owned-accounts-and-key-pairs),
+and [contracts accounts](https://ethereum.org/en/developers/docs/accounts/#contract-accounts).
+The former type is the only one that can initiate transactions, while the latter
+is the only one that can implement arbitrary logic. This limitation prevents
+some interesting use cases, such as the ability to sign transactions via means
+that don't require the private key, transaction fees to be paid in tokens other
+than ETH, subscriptions, flash loans without deploying proxy contracts, and more.
+
+Although not required to interact with Radian, some key features are only possible
+when using a a contract account. Radian provides a complete protocol for creating
+contract accounts (Hyper Wallets), as well as a protocol for new types of smart
+contracts to be created that take advantage of Hyper Wallets (Hyper Apps).
+
+Certain protocol modules (such as the [Paymaster](/docs/paymaster)) are themselves
+Hyper Apps. In the same way that you can install apps onto your smartphone, you
+can install Hyper Apps onto your Hyper Wallet.
+
+Hyper Wallets and Hyper Apps are only available on the zkSync deployment of Radian,
+as it is made possible by zkSync's native account abstraction support.
+
+## Hyper Apps
+
+Hyper wallets expose a standard interface for interacting with Hyper Apps. Because
+Hyper Apps can request elevated permissions for Hyper Wallets, they must be
+explicitly installed. At a high-level, permissioning of Hyper Apps are represented
+as [counterfactual delegations](https://delegatable.org/docs/counterfactual-delegation)
+except unlike the Delegatable protocol, it does not require other contracts to
+inherit from another contract in order to be compatible -- it is natively compatible
+with all smart contracts by default.
+
+## Use cases
+
+### Paymaster
+
+The [Paymaster](/docs/paymaster) is a Hyper App that allows you to pay for gas
+fees in any ERC20 token. This means hyper wallets can participate, execute, and
+interact with any dApp or smart contract without having to hold ETH.
+
+### Subscriptions
+
+Although there has been attempts to create subscription protocols on Ethereum L1,
+they require the payment token to be wrapped, or in other cases require the user
+to lock up their tokens in a contract. This does not acctually solve the problem
+of subscriptions, as the user actually has to move the tokens out of their wallet
+ahead of time in one form or another, and is more akin to a one-sided escrow
+contract rather than a subscription. A hyper app can request a "pull" permission
+with some limit on the amount of tokens that can be pulled over some interval.
+With Hyper apps, real subscription services can be implemented.
+
+### Multi-Factor Authentication / Recovery
+
+Hyper Wallets authorize transactions using a dynamic signatured scheme. Hyper Wallets
+implemented a dynamic version of [EIP-1271](https://eips.ethereum.org/EIPS/eip-1271)
+where the implementation of the `isValidSignature` function is extended when A
+Hyper App is installed. This allows implementing multi-factor authentication,
+recovery schemes, "pulls" from other contracts, and more.
+
+### Flash Loans
+
+Some of the most powerful DeFi strategies involve flash loans. Flash loans are
+loans that are taken out and paid back in the same transaction. In order to verify
+that the loan is paid back, the last "execution" step of the transaction involves
+the contract giving out the flash loan to verify that it has been paid back. It
+is a vulnerability otherwise, since allowing execution afterwards can result in
+the contract giving out the load not being paid back. Therefore, flash loans
+typically require an `onFlashLoan` callback to be implemented by the contract
+that is borrowing the loan. This is not possible with EOAs, but is possible with
+Hyper Wallets. Hyper Apps can request permission to hook into this callback,
+allowing them to implement flash loans without deploying a proxy contract.
+
+### Attestations
+
+One of the experimental features of Radian is the uncollateralized lending protocol
+which can be used to as a buy-now-pay-later type of service. In traditional systems,
+the merchant pays a fee when receiving this type of payment to the lender. The
+merchant is incentivized to do this because it is possible that this a sale
+that would not have been made otherwise. However in the case of Radian, the
+merchant would instead pay in terms of risk.
+
+To give a more technical description, the merchant receives the payment wrapped
+in a NFT that can only be unwrapped when the payer repays the protocol. This means
+that the merchant should only accept these payments from users that are likely
+to pay off their loan.
+
+The immediate though you might have next is -- but this is the blockchain, how
+can we gauge this? The protocol itself provides the ability to query the interactions
+between the user and Radian, but this may not be enough.
+
+Therefore, we envision that there will exist a class of Hyper Apps that users
+can install onto to their Hyper Wallet that attest to something about the user
+using a zero-knowledge proof.
+
+For example, the CoinCircle Hyper App is an example of a hyper app that a user
+can install on their Hyper Wallet and link to their CoinCircle account, generating
+a proof that the user has a unique verified identity on the platform without revealing
+any information about their identity. This would require that the merchant trusts
+CoinCircle in order to trust the attestation.

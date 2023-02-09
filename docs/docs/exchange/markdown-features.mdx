@@ -1,0 +1,73 @@
+---
+sidebar_position: 4
+---
+
+# Overview
+
+The Radian Exchange is a first-class citizen of the protocol which also acts
+as a pricing oracle for the rest of the protocol. Anywhere a price is needed,
+such as determining the TVL of the collector, liquidation prices in the lending
+protocol, or the amount of some collateral required to mint USDX is determined
+by the price of the asset in the Radian Exchange.
+
+Unlike other protocols, there is no "whitelist" of assets that allow such asset
+to be used in the Protocol. Whether or not an asset is allowed to be used in
+the protocol is determined by the price and liquidity of the asset on the Radian
+Exchange. Only the minimums of these values is governed by RAD holders.
+
+## Common denominator
+
+All liquidity pools in the Radian Exchange have USDX on one side of the pool. This
+differs from other AMMs where any two assets can be in a pool. By having a common
+base token across all pools, routing never requires more than one hop, whereas
+the number of hops is potentially unbounded in other AMMs. This is especially
+important in the Radian Protocol as it is very common for other core contracts
+to perform swaps as part of their primary function.
+
+The other benefit is that lookups for liquidity and prices of assets are one-dimensional,
+reducing computational complexity and gas costs.
+
+The Radian Exchange as a whole can be though of as a "spokes and hub" model, where
+the hub is USDX and the spokes are all the other assets.
+
+## Leveraged Trades
+
+Since the exchange has a native integration with the lending and stablecoin
+modules, the exchange has the ability to provide leveraged trades in such a way
+that the protocol itself acts as the counterparty. On the radian exchange, leverage
+is simply a parameter that can be set when executing a trade up to some limit
+which is set by protocol governance. At a high-level it works as follows:
+
+1. You want to create a 3x levered trade to buy $3000 worth of ETH against $1000 worth of RUSD
+2. You call the `trade` function on the exchange with the following parameters:
+    - `assetIn`: RUSD
+    - `assetOut`: ETH
+    - `amountIn`: 1000
+    - `leverage`: 3
+3. The exchange will mint 2000 RUSD from the stablecoin module
+4. A trade is executed on the exchange to buy $3000 of ETH for 3000 RUSD
+5. The $3000 worth of ETH is wrapped into an ERC-1155 NFT.
+6. You receive the NFT which represents the trade.
+
+Once the trade is complete, the NFT can be redeemed for the underlying assets.
+
+The reason for using an NFT is that it allows for the trade to be liquidated
+in the event that the price of ETH moves against the trader. This is especially
+important because RUSD minted by borrowing RAD from the collector, and the RAD
+that is borrowed is in fact minted, increasing the total supply on RAD. This allows
+a unique feature of the protocol but temporarily increases the supply of RAD, although
+economically it is not actually increasing the supply of RAD since it is guaranteed
+to be burned in the future.
+
+Leveraged trades accrue fees according to the funding rate set by the protocol,
+and is proportional to the amount of leverage you use.
+
+## Alternative Price Curves
+
+By default, the Radian Exchange uses a constant product curve. This is the same
+curve used by Uniswap and Sushiswap. However, the Radian Exchange also supports
+any arbitrary curve, as well as concentrating liquidity along the curve. This
+creates a new spoke where the hub is the default curve, and the spoke is the
+alternative curve. This allows for the creation of options as well as optimized
+pools for stablecoins. Alternative curves must be deployed as smart contracts
+that implement the `ICurve` interface, and can be deployed by anyone.

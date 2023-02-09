@@ -1,0 +1,41 @@
+---
+sidebar_position: 4
+---
+
+# Overview
+
+The collector is the core component of the Radian Protocol, and acts as a treasury,
+yield generation system, an oracle, and a burning mechanism all at the same time.
+
+Fee-generating modules of the Radian Protocl such as the [Radian Exchange](/docs/radian-exchange),
+the [Radian Paymaster](/docs/radian-paymaster), [Radian Lending](/docs/radian-lending),
+the [USDX Stablecoin](/docs/usdx-stablecoin), and [Radian Staking](/docs/staking)
+all send a portion of the fees generated to the collector.
+
+Holders of RAD can, at any time, burn RAD in exchange for the underlying assets
+in the collector, relative to the total supply. This means that at any time,
+if the per-RAD value of the underlying assets in the collector is greater than
+price of RAD, there is an arbitrage opportunity to burn RAD and sell the underlying
+assets for a profit. This is a win-win for other holders as it decreases the total
+supply of RAD, and increases the value of the remaining RAD.
+
+## Transfers and RADX
+
+Unlike your typical ERC20 token, the RAD token is not transferrable outside of
+the Radian Protocol. This is due to the fact that RAD is a rebasing token similar
+to stETH, and also due to the fact that RAD has a pricing function that is
+proportional to the value of the underlying assets within the Radian Exchange.
+
+For these reasons, RAD can be converted to RADX, which is a transferrable ERC20
+token. The RADX token is a 1:1 representation of the RAD token, and can be
+converted back to RAD at any time.
+
+To give a more technical description, RAD token transfers require either the "from" or
+"to" address to be some contract of the protocol itself. This means it can be
+transferred from the protocol to your wallet, but not from your wallet to another
+wallet (however you will still be able to transfer it back to the protocol).
+
+## Governance
+
+The RAD token is also the governance token of the Radian Protocol. It is used to
+vote on proposals, and to stake for the Radian Staking module.

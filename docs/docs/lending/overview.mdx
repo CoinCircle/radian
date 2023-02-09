@@ -1,0 +1,71 @@
+---
+sidebar_position: 1
+---
+
+# Overview
+
+The Radian Lending protocol allows users to borrow and lend assets to the protocol.
+Unlike other lending markets the liquidity itself is both collateralized and lended
+from the corresponding liquidity pool on the [Radian Exchange](/docs/exchange).
+
+This allows shared liquidity for both trading and lending, which increases the
+efficiency of both markets.
+
+If you think about the difference between providing liquidity on an AMM versus
+providing liquidity on a lending market, you'll see that the only difference between
+the two is the number of assets you provide. On an AMM you provide both the
+base and quote asset, while on a lending market you only provide the base asset.
+
+So, to provide liquidity to the Radian Lending Market, you simply provide it to
+the exchange without providing the quote asset.
+
+Also unlike other lending markets -- there is no "whitelist" of assets that can
+be borrowed or supplied, so long as that asset has liquidity on the Radian Exchange.
+Permissioning is mathematical rather than administrative.
+
+Any asset you supply is automatically exchanged for RAD and then used to mint USDX.
+Therefore all lending and borrowing activity positively benefits all RAD holders.
+
+## Supplying Leverage
+
+When supplying liquidity to the lending market, you have the option of supplying
+two types of liquidity - free supply, and lockable supply.
+
+The free supply can only be used for overcollateralized borrowing, and therefore
+can be withdrawn at any time.
+
+However, you have the option of increasing your yield by also allowing traders
+who want to make leveraged trades to borrow against your liquidity. This is called
+"lockable supply" and is a way to increase your yield.
+
+When a trader borrows against liquidity to make a leveraged trade, the borrowed
+liquidity is locked until the trader either exits the trade or becomes liquidated.
+When supply is used for a leveraged trade, this supply is considered "active".
+So long as the inactive supply is sufficient to cover your withdrawal, you can
+withdraw your supply at any time. When this is not the case, you can either wait,
+or create a withdrawal request which gets put into a queue than automatically
+gets fulfilled when a trader exits their trade.
+
+## Boosts
+
+Suppliers of liquidity have the option of receiving interest in the form of RAD
+rather than USDX. This is called a "boost" as the APR is increased in this scenario.
+When a boost is enabled, the collector will instead mint RAD in exchange for the
+yield, and send it to the collector.
+
+## Treasury
+
+The Money Market itself earns a yield on the spread between the borrow rate and
+the supply rate. Additionally, since liquidations are paid for by the protocol and
+swapped for the base asset in the exchange, the protocol also earns a yield on
+any additionally leftover assets. This extra yield is ultimately sent to the
+collector which serves as a means of distributing this yield to all RAD holders.
+
+The parameters of the treasury which are governed by veRAD holders are as follows:
+
+* TARGET_RESERVE_AMOUNT - The amount of base asset that the treasury should hold
+  in reserve. This is to ensure that the protocol has enough assets to cover
+  liquidations and other unforeseen events.
+* MIN_TRANSFER_TO_COLLECTOR_AMOUNT - The minimum amount of base asset that  can be
+transferred from the treasury to the collector. Since this function can be called
+by anyone, this ensures dusty transfers are not made to the collector.

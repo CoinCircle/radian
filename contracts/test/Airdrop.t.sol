@@ -4,7 +4,7 @@ pragma solidity >=0.8.17;
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "forge-std/Test.sol";
-import {Airdrop} from "../Airdrop.sol";
+import {Airdrop} from "../radian/Airdrop.sol";
 
 contract Token is ERC20 {
     constructor(

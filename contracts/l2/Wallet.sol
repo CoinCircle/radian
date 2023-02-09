@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@matterlabs/zksync-contracts/l2/system-contracts/interfaces/IAccount.sol";
-import "@matterlabs/zksync-contracts/l2/system-contracts/TransactionHelper.sol";
+import "@matterlabs/zksync-contracts/l2/system-contracts/libraries/TransactionHelper.sol";
 
 import "@openzeppelin/contracts/interfaces/IERC1271.sol";
 
@@ -12,7 +12,7 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 // Access zkSync system contracts, in this case for nonce validation vs NONCE_HOLDER_SYSTEM_CONTRACT
 import "@matterlabs/zksync-contracts/l2/system-contracts/Constants.sol";
 // to call non-view method of system contracts
-import "@matterlabs/zksync-contracts/l2/system-contracts/SystemContractsCaller.sol";
+import "@matterlabs/zksync-contracts/l2/system-contracts/libraries/SystemContractsCaller.sol";
 
 contract Wallet is IAccount, IERC1271 {
     // to get transaction hash
@@ -42,14 +42,24 @@ contract Wallet is IAccount, IERC1271 {
         bytes32,
         bytes32 _suggestedSignedHash,
         Transaction calldata _transaction
-    ) external payable override onlyBootloader {
+    ) external payable override onlyBootloader returns (bytes4 magic) {
         _validateTransaction(_suggestedSignedHash, _transaction);
+        magic = IAccount.validateTransaction.selector;
     }
 
     function _validateTransaction(
         bytes32 _suggestedSignedHash,
         Transaction calldata _transaction
     ) internal {
+        bytes32 txHash = _getTxHash(_suggestedSignedHash, _transaction);
+        _incrementNonce(_transaction);
+        require(
+            isValidSignature(txHash, _transaction.signature) ==
+                EIP1271_SUCCESS_RETURN_VALUE
+        );
+    }
+
+    function _incrementNonce(Transaction calldata _transaction) internal {
         // Incrementing the nonce of the account.
         // Note, that reserved[0] by convention is currently equal to the nonce passed in the transaction
         SystemContractsCaller.systemCall(
@@ -61,8 +71,9 @@ contract Wallet is IAccount, IERC1271 {
                 (_transaction.reserved[0])
             )
         );
+    }
 
-        bytes32 txHash;
+    function _getTxHash(bytes32 _suggestedSignedHash, Transaction calldata _transaction) internal view returns (bytes32 txHash) {
         // While the suggested signed hash is usually provided, it is generally
         // not recommended to rely on it to be present, since in the future
         // there may be tx types with no suggested signed hash.
@@ -71,11 +82,6 @@ contract Wallet is IAccount, IERC1271 {
         } else {
             txHash = _suggestedSignedHash;
         }
-
-        require(
-            isValidSignature(txHash, _transaction.signature) ==
-                EIP1271_SUCCESS_RETURN_VALUE
-        );
     }
 
     function executeTransaction(
@@ -153,7 +159,7 @@ contract Wallet is IAccount, IERC1271 {
         require(success, "Failed to pay the fee to the operator");
     }
 
-    function prePaymaster(
+    function prepareForPaymaster(
         bytes32,
         bytes32,
         Transaction calldata _transaction

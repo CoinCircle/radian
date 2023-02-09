@@ -12,7 +12,7 @@
                 "ignoreConstructors": true
             }
         ],
-        "max-line-length": ["error", 100],
+        "max-line-length": ["warn", 100],
         "not-rely-on-time": "off",
         "avoid-low-level-calls": "off",
         "no-empty-blocks": "off",

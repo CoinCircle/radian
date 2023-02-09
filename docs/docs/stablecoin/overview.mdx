@@ -1,0 +1,40 @@
+---
+sidebar_position: 4
+---
+
+# Overview
+
+USD+ is the dollar-pegged stablecoin of the Radian Protocol and is a core component
+which enables unique features of the Radian Protocol.
+
+Radian achieves an efficient representation of value by "summing" locked values
+of multiple assets into a single numerical value, which is used across the protocol
+to avoid iteration and provide an efficient DeFi Protocol.
+
+In order to make this possible, since even the value of RAD itself will fluctate,
+the denominator of the value of the protocol must be a stable value. This is where
+USD+ comes in.
+
+Below we explain the mechanics of USD+, and how it is used in the Radian Protocol.
+
+## In the Collector
+
+The collector acts as a treasury for the protocol, and can contain any type of
+asset, whether it be ERC-20 tokens, NFTs, or even ETH. The value of RAD itself
+is proportional to locked assets in the collector. It order to derive a common
+denominator for the value of the protocol, all exchange rates are always denomiated
+in USD+.
+
+## In the Exchange
+
+Unlike other AMMs, the Radian Exchange does not allow arbitraty assets to be on
+both sides. Instead, USD+ must always be on one side. Since USD+ is itself backed
+by RAD, this means that liquidity pools in Radian are also implicitly backed by RAD.
+
+There are two reasons why having USD+ always on one side is important:
+
+1. It allows for a more efficient calculation of exchange rates and therefore lower
+gas costs, since it reduces computational complexity on one side of the pool (e.g. multiplying by 1 rather than price).
+2. Routing becomes much more efficient, since it guarantees a maximum of 2 hops
+to get from any asset to any other asset, whereas the max is unbounded in other AMMs
+such as Uniswap.

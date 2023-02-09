@@ -1,0 +1,41 @@
+---
+sidebar_position: 4
+---
+
+# Overview
+
+The Radian Paymaster allows you to pay gas fees in any token, so long as the
+token has sufficient liquidity on either the Radian Exchange or any of the
+aggregated exchanges to swap a sufficient amount of the token for ETH.
+
+"Needing ETH" has been a long-standing issue for the Ethereum ecosystem. Furthermore,
+the requirement of having to make a separate transaction to "approve" a token
+to be spent by a smart contract has been a major source of confusion and UX
+friction for users. The Radian Paymaster solves both of these problems.
+
+## Subsidizing Users of Your Token
+
+Although supplying liquidity for your token (in the case it has none) in order
+to allow users of your token to transact without ETH is completely practical,
+the paymaster also provides a method to subsidize the gas costs of users of your
+token more directly. You can supply liquidity to the [Paymaster Pool](/paymaster/pool)
+which is a special pool where only the paymaster is allowed to trade. In the
+paymaster pool, you can set the exchange rate between your token and ETH such
+that the price is constant, which avoids any slippage and also is immune to
+arbitrage attacks since only the paymaster can interact with it.
+
+## Yield Generation
+
+The paymaster also acts as a source of yield to all Radian holders, in a way that
+is a win-win for both Radian holders and paymaster users. After the paymaster
+pays for a transaction, there will be a small amount of change left over in the
+form of ETH. Since we assume that users of the paymaster will make efficient
+gas estimations (since they are incentivized to do so), the paymaster does not
+send back change. This is because it is entirely possible that it would cost more
+in gas to send the change back than the value of the change itself.
+
+Therefore, the paymaster instead makes no transfer of the change, and it gets
+left in the paymaster contract. Once this change accumulates to a certain threshold
+(set by governance), the paymaster will automatically send the ETH to the collector.
+Because Radian holders can redeem RAD for the underlying assets in the collector,
+this acts as a source of yield for Radian holders.

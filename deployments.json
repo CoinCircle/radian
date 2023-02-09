@@ -22,12 +22,16 @@
             "network": "zksync-goerli",
             "contracts": [
                 {
-                    "name": "Counter",
+                    "name": "WETH9",
                     "address": "0x7D88F7F93069b659C3bA55f72CC3589890401779"
                 },
                 {
-                    "name": "WalletFactory",
+                    "name": "RadianX",
                     "address": "0x68AB4123Ffdc7F0F26Ea7525B0b6BE1EDF4Cd51D"
+                },
+                {
+                    "name": "NFTDescriptor",
+                    "address": "0x10402c259BC537acA52AB2198a54ec6F5D651Ce1"
                 }
             ]
         }
