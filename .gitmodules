@@ -1,9 +1,6 @@
 [submodule "lib/solmate"]
 	path = lib/solmate
 	url = https://github.com/transmissions11/solmate
-[submodule "lib/v2-testnet-contracts"]
-	path = lib/v2-testnet-contracts
-	url = https://github.com/matter-labs/v2-testnet-contracts
 [submodule "lib/openzeppelin-contracts"]
 	path = lib/openzeppelin-contracts
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
@@ -24,3 +21,6 @@
 	path = lib/v3-periphery
 	url = https://github.com/uniswap/v3-periphery
 	branch = v1.3.0
+[submodule "lib/v2-testnet-contracts"]
+	path = lib/v2-testnet-contracts
+	url = https://github.com/matter-labs/v2-testnet-contracts
