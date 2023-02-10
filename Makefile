@@ -24,3 +24,11 @@ chain:
 
 localdeploy:
 	forge script contracts/Deploy.s.sol:DeployScript --rpc-url http://127.0.0.1:8545 --broadcast -vvvv;
+
+rundapp:
+	npm install --prefix ./dapp;
+	npm run --prefix ./dapp dev;
+
+rundocs:
+	npm install --prefix ./docs;
+	npm run --prefix ./docs start;
