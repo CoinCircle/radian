@@ -1,5 +1,6 @@
 import './globals.css'
 import Header from '~/components/Header'
+import WagmiProvider from '~/lib/wagmi/provider'
 
 export default function RootLayout({
   children,
@@ -14,8 +15,10 @@ export default function RootLayout({
       */}
       <head />
       <body>
-        <Header />
-        {children}
+        <WagmiProvider>
+          <Header />
+          {children}
+        </WagmiProvider>
       </body>
     </html>
   )
