@@ -1,3 +1,4 @@
+include .env
 
 install:
 	curl -L https://foundry.paradigm.xyz | bash;
@@ -17,3 +18,9 @@ install:
 	# git submodule update --init --recursive --force  --remote;
 	# git pull --prune --recurse-submodules --force;
 
+chain:
+	anvil -m ${MNEMONIC} --code-size-limit=99999999
+
+
+localdeploy:
+	forge script contracts/Deploy.s.sol:DeployScript --rpc-url http://127.0.0.1:8545 --broadcast -vvvv;
