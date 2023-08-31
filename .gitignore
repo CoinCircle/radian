@@ -121,3 +121,7 @@ certora_*
 
 # windows defender files
 **/*Zone.Identifier
+
+# foundry deployment metadata
+broadcast/
+.turbo

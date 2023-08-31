@@ -1,0 +1,96 @@
+{
+    "deployments": [
+        {
+            "network": "goerli",
+            "contracts": [
+                {
+                    "name": "Counter",
+                    "address": "0xFf834d3a5Aa4C063A9aE54D52FAd6361Dc77A102"
+                }
+            ]
+        },
+        {
+            "network": "hardhat",
+            "contracts": [
+                {
+                    "name": "Counter",
+                    "address": "0x118CA279387e18d543162cFD1802Ac4E537157c4"
+                }
+            ]
+        },
+        {
+            "network": "zksync-goerli",
+            "contracts": [
+                {
+                    "name": "WETH9",
+                    "address": "0x2b4d41A21770B32A3c55DDa4bE1DE7673a612657"
+                },
+                {
+                    "name": "RadianX",
+                    "address": "0x1C55592045EE79c82a22a3A80eFF08A956982c98"
+                },
+                {
+                    "name": "NFTDescriptor",
+                    "address": "0xf878928d104A4aD98D2c407Caa0b250f77F07113"
+                },
+                {
+                    "name": "ExchangePoolFactory",
+                    "address": "0x36A91cBBf6B4F890afDC4A8af341578f143F9038"
+                },
+                {
+                    "name": "SwapRouter",
+                    "address": "0x5b91dc6B8BC4Eed56335C1D1c90D796DA0ba749C"
+                },
+                {
+                    "name": "WalletFactory",
+                    "address": "0x2105253871D133FBdE639E6bCbb679cFBDc094Ae"
+                },
+                {
+                    "name": "RadianPaymaster",
+                    "address": "0xB9f893891A6aaB81067ef0627D63C757DdAC3D39"
+                },
+                {
+                    "name": "NonfungiblePositionManager",
+                    "address": "0xbC146B3C7161cC403a391eC3C7263945b4a0059A"
+                }
+            ]
+        },
+        {
+            "network": "zksync-local",
+            "contracts": [
+                {
+                    "name": "WETH9",
+                    "address": "0x29c6fF2E3D04a9f37e7af1fF9b38C9E2e9079FfA"
+                },
+                {
+                    "name": "RadianX",
+                    "address": "0xd4567AA4Fd1B32A16c16CBFF9D9a69e51CF72293"
+                },
+                {
+                    "name": "NFTDescriptor",
+                    "address": "0xcFDE18a0f130bBAfe0037072407F83899D49414f"
+                },
+                {
+                    "name": "ExchangePoolFactory",
+                    "address": "0x3ccA24e1A0e49654bc3482ab70199b7400eb7A3a"
+                },
+                {
+                    "name": "SwapRouter",
+                    "address": "0xfC3c03385dA8D5Adfb8BDF5f5fe156fb5B3a6Ee2"
+                },
+                {
+                    "name": "WalletFactory",
+                    "address": "0x1055780Bd25e2F698E7c9a95FBaf4cb565A23A14"
+                },
+                {
+                    "name": "NonfungiblePositionManager",
+                    "address": "0xF3a4d6E6581e12Dc5b0eCd6EA3d483fF09c3cAE0"
+                },
+                {
+                    "name": "RadianPaymaster",
+                    "address": "0xd19449266F443e67175e7669be788F94ca6e886e"
+                }
+            ]
+        }
+    ]
+}
