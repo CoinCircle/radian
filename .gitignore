@@ -125,3 +125,9 @@ certora_*
 # foundry deployment metadata
 broadcast/
 .turbo
+
+# security files that should never be committed
+*.pem
+*.key
+*.p12
+*.pfx
