@@ -1,6 +1,6 @@
 # Radian Protocol
 
-The radian protocol is a Revolutionary Autonomous Decentralized protocol that provides a set of economic primitives designed to work with the Radian (RAD) token enabling features far beyond what is capable with CeFi systems while maintaining the trustlessness and decentralization of DeFi.
+Radian protocol is a revolutionary autonomous decentralized finance protocol that provides a set of economic primitives designed to work with the Radian (RAD) token enabling features far beyond what is capable with CeFi systems while maintaining the trustlessness and decentralization of DeFi.
 
 Built on zkSync Era with account abstraction capabilities, Radian enables gasless transactions, smart wallets, and a unified liquidity layer across trading, lending, and synthetic derivatives.
 
@@ -86,8 +86,8 @@ cd packages/contracts
 cp .env.example .env
 # Edit .env with your MNEMONIC and INFURA_API_KEY
 
-# Install dependencies
-npm install
+# Install dependencies without running scripts
+yarn install  --ignore-scripts
 
 # Run tests
 forge test
@@ -97,6 +97,9 @@ npm run test
 
 # Start local blockchain
 anvil
+
+# Build
+npm run build
 
 # Deploy locally (in another terminal)
 npm run deploy

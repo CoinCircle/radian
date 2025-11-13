@@ -5,3 +5,5 @@
 @uniswap/v3-periphery/=lib/v3-periphery/
 solmate/=lib/solmate/
 forge-std/=lib/forge-std/src/
+base64-sol/=../../node_modules/base64-sol/
+@float-capital/ds-test/=../../node_modules/@float-capital/ds-test/

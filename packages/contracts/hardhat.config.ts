@@ -12,6 +12,8 @@ import 'hardhat-gas-reporter';
 import 'hardhat-tracer';
 import 'solidity-coverage';
 
+import 'hardhat-preprocessor';
+
 import * as dotenv from 'dotenv';
 import { readFileSync } from 'fs';
 import { TASK_COMPILE_SOLIDITY_GET_SOURCE_PATHS } from 'hardhat/builtin-tasks/task-names';
@@ -19,6 +21,7 @@ import { HardhatUserConfig, subtask } from 'hardhat/config';
 import { NetworkUserConfig } from 'hardhat/types';
 import { resolve } from 'path';
 import * as toml from 'toml';
+
 
 dotenv.config({ path: resolve(__dirname, `./.env`) });
 
@@ -183,6 +186,13 @@ subtask(TASK_COMPILE_SOLIDITY_GET_SOURCE_PATHS).setAction(async (_, __, runSuper
   );
 });
 
+function getRemappings() {
+  return readFileSync('remappings.txt', 'utf8')
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => line.trim().split('='));
+}
+
 // For full option list see: https://hardhat.org/config/
 const config: HardhatUserConfig = {
   paths: {
@@ -191,6 +201,20 @@ const config: HardhatUserConfig = {
     sources: `./contracts`,
     tests: `./integration`,
   },
+  preprocess: {
+    eachLine: (_hre: any) => ({
+      transform: (line: string) => {
+        if (line.match(/^\s*import/)) {
+          getRemappings().forEach(([find, replace]) => {
+            if (line.match(find)) {
+              line = line.replace(find, replace);
+            }
+          });
+        }
+        return line;
+      },
+    }),
+  },  
   defaultNetwork: `hardhat`,
   solidity: {
     version: foundry.default?.solc || SOLC_DEFAULT,
