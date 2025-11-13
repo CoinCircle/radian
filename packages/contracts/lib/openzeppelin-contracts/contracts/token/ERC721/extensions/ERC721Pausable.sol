@@ -3,8 +3,8 @@
 
 pragma solidity ^0.8.0;
 
-import "../ERC721.sol";
-import "../../../security/Pausable.sol";
+import '../ERC721.sol';
+import '../../../security/Pausable.sol';
 
 /**
  * @dev ERC721 token with pausable token transfers, minting and burning.
@@ -14,21 +14,21 @@ import "../../../security/Pausable.sol";
  * event of a large bug.
  */
 abstract contract ERC721Pausable is ERC721, Pausable {
-    /**
-     * @dev See {ERC721-_beforeTokenTransfer}.
-     *
-     * Requirements:
-     *
-     * - the contract must not be paused.
-     */
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 firstTokenId,
-        uint256 batchSize
-    ) internal virtual override {
-        super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
+  /**
+   * @dev See {ERC721-_beforeTokenTransfer}.
+   *
+   * Requirements:
+   *
+   * - the contract must not be paused.
+   */
+  function _beforeTokenTransfer(
+    address from,
+    address to,
+    uint256 firstTokenId,
+    uint256 batchSize
+  ) internal virtual override {
+    super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
 
-        require(!paused(), "ERC721Pausable: token transfer while paused");
-    }
+    require(!paused(), 'ERC721Pausable: token transfer while paused');
+  }
 }

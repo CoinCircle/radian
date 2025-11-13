@@ -3,8 +3,8 @@
 
 pragma solidity ^0.8.4;
 
-import "../CrossChainEnabled.sol";
-import "./LibArbitrumL1.sol";
+import '../CrossChainEnabled.sol';
+import './LibArbitrumL1.sol';
 
 /**
  * @dev https://arbitrum.io/[Arbitrum] specialization or the
@@ -20,25 +20,25 @@ import "./LibArbitrumL1.sol";
  * _Available since v4.6._
  */
 abstract contract CrossChainEnabledArbitrumL1 is CrossChainEnabled {
-    /// @custom:oz-upgrades-unsafe-allow state-variable-immutable
-    address private immutable _bridge;
+  /// @custom:oz-upgrades-unsafe-allow state-variable-immutable
+  address private immutable _bridge;
 
-    /// @custom:oz-upgrades-unsafe-allow constructor
-    constructor(address bridge) {
-        _bridge = bridge;
-    }
+  /// @custom:oz-upgrades-unsafe-allow constructor
+  constructor(address bridge) {
+    _bridge = bridge;
+  }
 
-    /**
-     * @dev see {CrossChainEnabled-_isCrossChain}
-     */
-    function _isCrossChain() internal view virtual override returns (bool) {
-        return LibArbitrumL1.isCrossChain(_bridge);
-    }
+  /**
+   * @dev see {CrossChainEnabled-_isCrossChain}
+   */
+  function _isCrossChain() internal view virtual override returns (bool) {
+    return LibArbitrumL1.isCrossChain(_bridge);
+  }
 
-    /**
-     * @dev see {CrossChainEnabled-_crossChainSender}
-     */
-    function _crossChainSender() internal view virtual override onlyCrossChain returns (address) {
-        return LibArbitrumL1.crossChainSender(_bridge);
-    }
+  /**
+   * @dev see {CrossChainEnabled-_crossChainSender}
+   */
+  function _crossChainSender() internal view virtual override onlyCrossChain returns (address) {
+    return LibArbitrumL1.crossChainSender(_bridge);
+  }
 }

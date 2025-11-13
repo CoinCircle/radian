@@ -2,7 +2,7 @@
 // OpenZeppelin Contracts (last updated v4.5.0) (token/ERC20/presets/ERC20PresetFixedSupply.sol)
 pragma solidity ^0.8.0;
 
-import "../extensions/ERC20Burnable.sol";
+import '../extensions/ERC20Burnable.sol';
 
 /**
  * @dev {ERC20} token, including:
@@ -19,17 +19,17 @@ import "../extensions/ERC20Burnable.sol";
  * _Deprecated in favor of https://wizard.openzeppelin.com/[Contracts Wizard]._
  */
 contract ERC20PresetFixedSupply is ERC20Burnable {
-    /**
-     * @dev Mints `initialSupply` amount of token and transfers them to `owner`.
-     *
-     * See {ERC20-constructor}.
-     */
-    constructor(
-        string memory name,
-        string memory symbol,
-        uint256 initialSupply,
-        address owner
-    ) ERC20(name, symbol) {
-        _mint(owner, initialSupply);
-    }
+  /**
+   * @dev Mints `initialSupply` amount of token and transfers them to `owner`.
+   *
+   * See {ERC20-constructor}.
+   */
+  constructor(
+    string memory name,
+    string memory symbol,
+    uint256 initialSupply,
+    address owner
+  ) ERC20(name, symbol) {
+    _mint(owner, initialSupply);
+  }
 }

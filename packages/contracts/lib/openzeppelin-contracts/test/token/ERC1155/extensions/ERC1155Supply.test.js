@@ -1,11 +1,11 @@
-const { BN } = require('@openzeppelin/test-helpers');
+const {BN} = require('@openzeppelin/test-helpers');
 
-const { expect } = require('chai');
+const {expect} = require('chai');
 
 const ERC1155SupplyMock = artifacts.require('ERC1155SupplyMock');
 
 contract('ERC1155Supply', function (accounts) {
-  const [ holder ] = accounts;
+  const [holder] = accounts;
 
   const uri = 'https://token.com';
 
@@ -48,8 +48,8 @@ contract('ERC1155Supply', function (accounts) {
       beforeEach(async function () {
         await this.token.mintBatch(
           holder,
-          [ firstTokenId, secondTokenId ],
-          [ firstTokenAmount, secondTokenAmount ],
+          [firstTokenId, secondTokenId],
+          [firstTokenAmount, secondTokenAmount],
           '0x',
         );
       });
@@ -61,7 +61,9 @@ contract('ERC1155Supply', function (accounts) {
 
       it('totalSupply', async function () {
         expect(await this.token.totalSupply(firstTokenId)).to.be.bignumber.equal(firstTokenAmount);
-        expect(await this.token.totalSupply(secondTokenId)).to.be.bignumber.equal(secondTokenAmount);
+        expect(await this.token.totalSupply(secondTokenId)).to.be.bignumber.equal(
+          secondTokenAmount,
+        );
       });
     });
   });
@@ -86,14 +88,14 @@ contract('ERC1155Supply', function (accounts) {
       beforeEach(async function () {
         await this.token.mintBatch(
           holder,
-          [ firstTokenId, secondTokenId ],
-          [ firstTokenAmount, secondTokenAmount ],
+          [firstTokenId, secondTokenId],
+          [firstTokenAmount, secondTokenAmount],
           '0x',
         );
         await this.token.burnBatch(
           holder,
-          [ firstTokenId, secondTokenId ],
-          [ firstTokenAmount, secondTokenAmount ],
+          [firstTokenId, secondTokenId],
+          [firstTokenAmount, secondTokenAmount],
         );
       });
 

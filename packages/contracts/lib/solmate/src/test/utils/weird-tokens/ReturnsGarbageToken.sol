@@ -2,114 +2,110 @@
 pragma solidity >=0.8.0;
 
 contract ReturnsGarbageToken {
-    /*///////////////////////////////////////////////////////////////
+  /*///////////////////////////////////////////////////////////////
                                   EVENTS
     //////////////////////////////////////////////////////////////*/
 
-    event Transfer(address indexed from, address indexed to, uint256 amount);
+  event Transfer(address indexed from, address indexed to, uint256 amount);
 
-    event Approval(address indexed owner, address indexed spender, uint256 amount);
+  event Approval(address indexed owner, address indexed spender, uint256 amount);
 
-    /*///////////////////////////////////////////////////////////////
+  /*///////////////////////////////////////////////////////////////
                              METADATA STORAGE
     //////////////////////////////////////////////////////////////*/
 
-    string public constant name = "ReturnsGarbageToken";
+  string public constant name = 'ReturnsGarbageToken';
 
-    string public constant symbol = "RGT";
+  string public constant symbol = 'RGT';
 
-    uint8 public constant decimals = 18;
+  uint8 public constant decimals = 18;
 
-    /*///////////////////////////////////////////////////////////////
+  /*///////////////////////////////////////////////////////////////
                               ERC20 STORAGE
     //////////////////////////////////////////////////////////////*/
 
-    uint256 public totalSupply;
+  uint256 public totalSupply;
 
-    mapping(address => uint256) public balanceOf;
+  mapping(address => uint256) public balanceOf;
 
-    mapping(address => mapping(address => uint256)) public allowance;
+  mapping(address => mapping(address => uint256)) public allowance;
 
-    /*///////////////////////////////////////////////////////////////
+  /*///////////////////////////////////////////////////////////////
                               MOCK STORAGE
     //////////////////////////////////////////////////////////////*/
 
-    bytes garbage;
+  bytes garbage;
 
-    /*///////////////////////////////////////////////////////////////
+  /*///////////////////////////////////////////////////////////////
                                CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    constructor() {
-        totalSupply = type(uint256).max;
-        balanceOf[msg.sender] = type(uint256).max;
-    }
+  constructor() {
+    totalSupply = type(uint256).max;
+    balanceOf[msg.sender] = type(uint256).max;
+  }
 
-    /*///////////////////////////////////////////////////////////////
+  /*///////////////////////////////////////////////////////////////
                               ERC20 LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    function approve(address spender, uint256 amount) public virtual {
-        allowance[msg.sender][spender] = amount;
+  function approve(address spender, uint256 amount) public virtual {
+    allowance[msg.sender][spender] = amount;
 
-        emit Approval(msg.sender, spender, amount);
+    emit Approval(msg.sender, spender, amount);
 
-        bytes memory _garbage = garbage;
+    bytes memory _garbage = garbage;
 
-        assembly {
-            return(add(_garbage, 32), mload(_garbage))
-        }
+    assembly {
+      return(add(_garbage, 32), mload(_garbage))
+    }
+  }
+
+  function transfer(address to, uint256 amount) public virtual {
+    balanceOf[msg.sender] -= amount;
+
+    // Cannot overflow because the sum of all user
+    // balances can't exceed the max uint256 value.
+    unchecked {
+      balanceOf[to] += amount;
     }
 
-    function transfer(address to, uint256 amount) public virtual {
-        balanceOf[msg.sender] -= amount;
+    emit Transfer(msg.sender, to, amount);
 
-        // Cannot overflow because the sum of all user
-        // balances can't exceed the max uint256 value.
-        unchecked {
-            balanceOf[to] += amount;
-        }
+    bytes memory _garbage = garbage;
 
-        emit Transfer(msg.sender, to, amount);
+    assembly {
+      return(add(_garbage, 32), mload(_garbage))
+    }
+  }
 
-        bytes memory _garbage = garbage;
+  function transferFrom(address from, address to, uint256 amount) public virtual {
+    uint256 allowed = allowance[from][msg.sender]; // Saves gas for limited approvals.
 
-        assembly {
-            return(add(_garbage, 32), mload(_garbage))
-        }
+    if (allowed != type(uint256).max) allowance[from][msg.sender] = allowed - amount;
+
+    balanceOf[from] -= amount;
+
+    // Cannot overflow because the sum of all user
+    // balances can't exceed the max uint256 value.
+    unchecked {
+      balanceOf[to] += amount;
     }
 
-    function transferFrom(
-        address from,
-        address to,
-        uint256 amount
-    ) public virtual {
-        uint256 allowed = allowance[from][msg.sender]; // Saves gas for limited approvals.
+    emit Transfer(from, to, amount);
 
-        if (allowed != type(uint256).max) allowance[from][msg.sender] = allowed - amount;
+    bytes memory _garbage = garbage;
 
-        balanceOf[from] -= amount;
-
-        // Cannot overflow because the sum of all user
-        // balances can't exceed the max uint256 value.
-        unchecked {
-            balanceOf[to] += amount;
-        }
-
-        emit Transfer(from, to, amount);
-
-        bytes memory _garbage = garbage;
-
-        assembly {
-            return(add(_garbage, 32), mload(_garbage))
-        }
+    assembly {
+      return(add(_garbage, 32), mload(_garbage))
     }
+  }
 
-    /*///////////////////////////////////////////////////////////////
+  /*///////////////////////////////////////////////////////////////
                               MOCK LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    function setGarbage(bytes memory _garbage) public virtual {
-        garbage = _garbage;
-    }
+  function setGarbage(bytes memory _garbage) public virtual {
+    garbage = _garbage;
+  }
 }

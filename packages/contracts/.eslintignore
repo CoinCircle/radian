@@ -13,6 +13,9 @@
 **/media
 **/out
 **/types
+**/lib
+
+lib/
 
 *.env
 *.log

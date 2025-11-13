@@ -1,7 +1,7 @@
 const ethSigUtil = require('eth-sig-util');
 const Wallet = require('ethereumjs-wallet').default;
 
-const { EIP712Domain, domainSeparator } = require('../../helpers/eip712');
+const {EIP712Domain, domainSeparator} = require('../../helpers/eip712');
 
 const EIP712 = artifacts.require('EIP712External');
 
@@ -21,9 +21,7 @@ contract('EIP712', function (accounts) {
   });
 
   it('domain separator', async function () {
-    expect(
-      await this.eip712.domainSeparator(),
-    ).to.equal(
+    expect(await this.eip712.domainSeparator()).to.equal(
       await domainSeparator(name, version, this.chainId, this.eip712.address),
     );
   });
@@ -40,17 +38,17 @@ contract('EIP712', function (accounts) {
       types: {
         EIP712Domain,
         Mail: [
-          { name: 'to', type: 'address' },
-          { name: 'contents', type: 'string' },
+          {name: 'to', type: 'address'},
+          {name: 'contents', type: 'string'},
         ],
       },
-      domain: { name, version, chainId, verifyingContract },
+      domain: {name, version, chainId, verifyingContract},
       primaryType: 'Mail',
       message,
     };
 
     const wallet = Wallet.generate();
-    const signature = ethSigUtil.signTypedMessage(wallet.getPrivateKey(), { data });
+    const signature = ethSigUtil.signTypedMessage(wallet.getPrivateKey(), {data});
 
     await this.eip712.verify(signature, wallet.getAddressString(), message.to, message.contents);
   });

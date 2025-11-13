@@ -1,11 +1,11 @@
-const { BN, constants } = require('@openzeppelin/test-helpers');
+const {BN, constants} = require('@openzeppelin/test-helpers');
 const ERC721RoyaltyMock = artifacts.require('ERC721RoyaltyMock');
-const { ZERO_ADDRESS } = constants;
+const {ZERO_ADDRESS} = constants;
 
-const { shouldBehaveLikeERC2981 } = require('../../common/ERC2981.behavior');
+const {shouldBehaveLikeERC2981} = require('../../common/ERC2981.behavior');
 
 contract('ERC721Royalty', function (accounts) {
-  const [ account1, account2 ] = accounts;
+  const [account1, account2] = accounts;
   const tokenId1 = new BN('1');
   const tokenId2 = new BN('2');
   const royalty = new BN('200');

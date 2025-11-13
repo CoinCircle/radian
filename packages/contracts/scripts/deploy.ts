@@ -179,7 +179,7 @@ export async function deployUniswapFactory(
     const deployer = zkDeployer.fromEthWallet(hre, wallet);
     const zkArtifact = await deployer.loadArtifact(`ExchangePoolFactory`);
     const gasPrice = await wallet.getGasPrice();
-    console.log({ gasPrice })
+    console.log({ gasPrice });
     contract = (await deployWait(
       deployer.deploy(zkArtifact, [], {
         maxFeePerGas: gasOpts?.maxFeePerGas,
@@ -327,31 +327,25 @@ export async function deployUniswapNFTDescriptor(
   let contract: Types.NonfungibleTokenPositionDescriptor;
   if (await isZkDeployment(wallet)) {
     const deployer = zkDeployer.fromEthWallet(hre, wallet);
-    const zkArtifact = await deployer.loadArtifact(`contracts/exchange/periphery/NonfungibleTokenPositionDescriptor.sol:NonfungibleTokenPositionDescriptor`);
+    const zkArtifact = await deployer.loadArtifact(
+      `contracts/exchange/periphery/NonfungibleTokenPositionDescriptor.sol:NonfungibleTokenPositionDescriptor`,
+    );
     contract = (await deployWait(
-      deployer.deploy(
-        zkArtifact,
-        [weth9Addr, ethers.utils.formatBytes32String(`ETH`)],
-        {
-          maxFeePerGas: gasOpts?.maxFeePerGas,
-          maxPriorityFeePerGas: gasOpts?.maxPriorityFeePerGas,
-          gasLimit: gasOpts?.gasLimit,
-        },
-      ),
+      deployer.deploy(zkArtifact, [weth9Addr, ethers.utils.formatBytes32String(`ETH`)], {
+        maxFeePerGas: gasOpts?.maxFeePerGas,
+        maxPriorityFeePerGas: gasOpts?.maxPriorityFeePerGas,
+        gasLimit: gasOpts?.gasLimit,
+      }),
     )) as Types.NonfungibleTokenPositionDescriptor;
   } else {
     const factory: Types.NonfungibleTokenPositionDescriptor__factory =
       await hre.ethers.getContractFactory(`NonfungibleTokenPositionDescriptor`, wallet);
     contract = await deployWait(
-      factory.deploy(
-        weth9Addr,
-        ethers.utils.formatBytes32String('ETH'),
-        {
-          maxFeePerGas: gasOpts?.maxFeePerGas,
-          maxPriorityFeePerGas: gasOpts?.maxPriorityFeePerGas,
-          gasLimit: gasOpts?.gasLimit,
-        },
-      ),
+      factory.deploy(weth9Addr, ethers.utils.formatBytes32String(`ETH`), {
+        maxFeePerGas: gasOpts?.maxFeePerGas,
+        maxPriorityFeePerGas: gasOpts?.maxPriorityFeePerGas,
+        gasLimit: gasOpts?.gasLimit,
+      }),
     );
   }
 
@@ -366,8 +360,8 @@ async function isZkDeployment(wallet: Wallet): Promise<boolean> {
   const net = await wallet.provider.getNetwork();
   return (
     ZK_EVM &&
-    (net.chainId === chainIds[`zksync-mainnet`]
-    || net.chainId === chainIds[`zksync-goerli`]
-    || net.chainId === chainIds[`zksync-local`])
+    (net.chainId === chainIds[`zksync-mainnet`] ||
+      net.chainId === chainIds[`zksync-goerli`] ||
+      net.chainId === chainIds[`zksync-local`])
   );
 }

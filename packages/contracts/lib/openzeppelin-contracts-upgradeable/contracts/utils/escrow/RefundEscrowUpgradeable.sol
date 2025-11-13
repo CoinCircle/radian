@@ -3,8 +3,8 @@
 
 pragma solidity ^0.8.0;
 
-import "./ConditionalEscrowUpgradeable.sol";
-import "../../proxy/utils/Initializable.sol";
+import './ConditionalEscrowUpgradeable.sol';
+import '../../proxy/utils/Initializable.sol';
 
 /**
  * @title RefundEscrow
@@ -17,97 +17,97 @@ import "../../proxy/utils/Initializable.sol";
  * with `RefundEscrow` will be made through the owner contract.
  */
 contract RefundEscrowUpgradeable is Initializable, ConditionalEscrowUpgradeable {
-    using AddressUpgradeable for address payable;
+  using AddressUpgradeable for address payable;
 
-    enum State {
-        Active,
-        Refunding,
-        Closed
-    }
+  enum State {
+    Active,
+    Refunding,
+    Closed
+  }
 
-    event RefundsClosed();
-    event RefundsEnabled();
+  event RefundsClosed();
+  event RefundsEnabled();
 
-    State private _state;
-    address payable private _beneficiary;
+  State private _state;
+  address payable private _beneficiary;
 
-    /**
-     * @dev Constructor.
-     * @param beneficiary_ The beneficiary of the deposits.
-     */
-    function __RefundEscrow_init(address payable beneficiary_) internal onlyInitializing {
-        __Ownable_init_unchained();
-        __RefundEscrow_init_unchained(beneficiary_);
-    }
+  /**
+   * @dev Constructor.
+   * @param beneficiary_ The beneficiary of the deposits.
+   */
+  function __RefundEscrow_init(address payable beneficiary_) internal onlyInitializing {
+    __Ownable_init_unchained();
+    __RefundEscrow_init_unchained(beneficiary_);
+  }
 
-    function __RefundEscrow_init_unchained(address payable beneficiary_) internal onlyInitializing {
-        require(beneficiary_ != address(0), "RefundEscrow: beneficiary is the zero address");
-        _beneficiary = beneficiary_;
-        _state = State.Active;
-    }
+  function __RefundEscrow_init_unchained(address payable beneficiary_) internal onlyInitializing {
+    require(beneficiary_ != address(0), 'RefundEscrow: beneficiary is the zero address');
+    _beneficiary = beneficiary_;
+    _state = State.Active;
+  }
 
-    /**
-     * @return The current state of the escrow.
-     */
-    function state() public view virtual returns (State) {
-        return _state;
-    }
+  /**
+   * @return The current state of the escrow.
+   */
+  function state() public view virtual returns (State) {
+    return _state;
+  }
 
-    /**
-     * @return The beneficiary of the escrow.
-     */
-    function beneficiary() public view virtual returns (address payable) {
-        return _beneficiary;
-    }
+  /**
+   * @return The beneficiary of the escrow.
+   */
+  function beneficiary() public view virtual returns (address payable) {
+    return _beneficiary;
+  }
 
-    /**
-     * @dev Stores funds that may later be refunded.
-     * @param refundee The address funds will be sent to if a refund occurs.
-     */
-    function deposit(address refundee) public payable virtual override {
-        require(state() == State.Active, "RefundEscrow: can only deposit while active");
-        super.deposit(refundee);
-    }
+  /**
+   * @dev Stores funds that may later be refunded.
+   * @param refundee The address funds will be sent to if a refund occurs.
+   */
+  function deposit(address refundee) public payable virtual override {
+    require(state() == State.Active, 'RefundEscrow: can only deposit while active');
+    super.deposit(refundee);
+  }
 
-    /**
-     * @dev Allows for the beneficiary to withdraw their funds, rejecting
-     * further deposits.
-     */
-    function close() public virtual onlyOwner {
-        require(state() == State.Active, "RefundEscrow: can only close while active");
-        _state = State.Closed;
-        emit RefundsClosed();
-    }
+  /**
+   * @dev Allows for the beneficiary to withdraw their funds, rejecting
+   * further deposits.
+   */
+  function close() public virtual onlyOwner {
+    require(state() == State.Active, 'RefundEscrow: can only close while active');
+    _state = State.Closed;
+    emit RefundsClosed();
+  }
 
-    /**
-     * @dev Allows for refunds to take place, rejecting further deposits.
-     */
-    function enableRefunds() public virtual onlyOwner {
-        require(state() == State.Active, "RefundEscrow: can only enable refunds while active");
-        _state = State.Refunding;
-        emit RefundsEnabled();
-    }
+  /**
+   * @dev Allows for refunds to take place, rejecting further deposits.
+   */
+  function enableRefunds() public virtual onlyOwner {
+    require(state() == State.Active, 'RefundEscrow: can only enable refunds while active');
+    _state = State.Refunding;
+    emit RefundsEnabled();
+  }
 
-    /**
-     * @dev Withdraws the beneficiary's funds.
-     */
-    function beneficiaryWithdraw() public virtual {
-        require(state() == State.Closed, "RefundEscrow: beneficiary can only withdraw while closed");
-        beneficiary().sendValue(address(this).balance);
-    }
+  /**
+   * @dev Withdraws the beneficiary's funds.
+   */
+  function beneficiaryWithdraw() public virtual {
+    require(state() == State.Closed, 'RefundEscrow: beneficiary can only withdraw while closed');
+    beneficiary().sendValue(address(this).balance);
+  }
 
-    /**
-     * @dev Returns whether refundees can withdraw their deposits (be refunded). The overridden function receives a
-     * 'payee' argument, but we ignore it here since the condition is global, not per-payee.
-     */
-    function withdrawalAllowed(address) public view override returns (bool) {
-        return state() == State.Refunding;
-    }
+  /**
+   * @dev Returns whether refundees can withdraw their deposits (be refunded). The overridden function receives a
+   * 'payee' argument, but we ignore it here since the condition is global, not per-payee.
+   */
+  function withdrawalAllowed(address) public view override returns (bool) {
+    return state() == State.Refunding;
+  }
 
-    /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
-     * variables without shifting down storage in the inheritance chain.
-     * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
-     */
-    uint256[49] private __gap;
+  /**
+   * @dev This empty reserved space is put in place to allow future versions to add new
+   * variables without shifting down storage in the inheritance chain.
+   * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
+   */
+  uint256[49] private __gap;
 }

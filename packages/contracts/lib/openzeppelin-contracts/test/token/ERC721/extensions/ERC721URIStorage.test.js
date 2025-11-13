@@ -1,11 +1,11 @@
-const { BN, expectRevert } = require('@openzeppelin/test-helpers');
+const {BN, expectRevert} = require('@openzeppelin/test-helpers');
 
-const { expect } = require('chai');
+const {expect} = require('chai');
 
 const ERC721URIStorageMock = artifacts.require('ERC721URIStorageMock');
 
 contract('ERC721URIStorage', function (accounts) {
-  const [ owner ] = accounts;
+  const [owner] = accounts;
 
   const name = 'Non Fungible Token';
   const symbol = 'NFT';
@@ -30,9 +30,7 @@ contract('ERC721URIStorage', function (accounts) {
     });
 
     it('reverts when queried for non existent token id', async function () {
-      await expectRevert(
-        this.token.tokenURI(nonExistentTokenId), 'ERC721: invalid token ID',
-      );
+      await expectRevert(this.token.tokenURI(nonExistentTokenId), 'ERC721: invalid token ID');
     });
 
     it('can be set for a token id', async function () {
@@ -42,7 +40,8 @@ contract('ERC721URIStorage', function (accounts) {
 
     it('reverts when setting for non existent token id', async function () {
       await expectRevert(
-        this.token.setTokenURI(nonExistentTokenId, sampleUri), 'ERC721URIStorage: URI set of nonexistent token',
+        this.token.setTokenURI(nonExistentTokenId, sampleUri),
+        'ERC721URIStorage: URI set of nonexistent token',
       );
     });
 
@@ -74,23 +73,19 @@ contract('ERC721URIStorage', function (accounts) {
     });
 
     it('tokens without URI can be burnt ', async function () {
-      await this.token.burn(firstTokenId, { from: owner });
+      await this.token.burn(firstTokenId, {from: owner});
 
       expect(await this.token.exists(firstTokenId)).to.equal(false);
-      await expectRevert(
-        this.token.tokenURI(firstTokenId), 'ERC721: invalid token ID',
-      );
+      await expectRevert(this.token.tokenURI(firstTokenId), 'ERC721: invalid token ID');
     });
 
     it('tokens with URI can be burnt ', async function () {
       await this.token.setTokenURI(firstTokenId, sampleUri);
 
-      await this.token.burn(firstTokenId, { from: owner });
+      await this.token.burn(firstTokenId, {from: owner});
 
       expect(await this.token.exists(firstTokenId)).to.equal(false);
-      await expectRevert(
-        this.token.tokenURI(firstTokenId), 'ERC721: invalid token ID',
-      );
+      await expectRevert(this.token.tokenURI(firstTokenId), 'ERC721: invalid token ID');
     });
   });
 });

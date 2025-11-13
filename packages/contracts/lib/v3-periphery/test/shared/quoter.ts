@@ -1,19 +1,24 @@
-import { Wallet } from 'ethers'
-import { MockTimeNonfungiblePositionManager } from '../../typechain'
-import { FeeAmount, TICK_SPACINGS } from './constants'
-import { encodePriceSqrt } from './encodePriceSqrt'
-import { getMaxTick, getMinTick } from './ticks'
+import { Wallet } from 'ethers';
+import { MockTimeNonfungiblePositionManager } from '../../typechain';
+import { FeeAmount, TICK_SPACINGS } from './constants';
+import { encodePriceSqrt } from './encodePriceSqrt';
+import { getMaxTick, getMinTick } from './ticks';
 
 export async function createPool(
   nft: MockTimeNonfungiblePositionManager,
   wallet: Wallet,
   tokenAddressA: string,
-  tokenAddressB: string
+  tokenAddressB: string,
 ) {
   if (tokenAddressA.toLowerCase() > tokenAddressB.toLowerCase())
-    [tokenAddressA, tokenAddressB] = [tokenAddressB, tokenAddressA]
+    [tokenAddressA, tokenAddressB] = [tokenAddressB, tokenAddressA];
 
-  await nft.createAndInitializePoolIfNecessary(tokenAddressA, tokenAddressB, FeeAmount.MEDIUM, encodePriceSqrt(1, 1))
+  await nft.createAndInitializePoolIfNecessary(
+    tokenAddressA,
+    tokenAddressB,
+    FeeAmount.MEDIUM,
+    encodePriceSqrt(1, 1),
+  );
 
   const liquidityParams = {
     token0: tokenAddressA,
@@ -27,21 +32,26 @@ export async function createPool(
     amount0Min: 0,
     amount1Min: 0,
     deadline: 1,
-  }
+  };
 
-  return nft.mint(liquidityParams)
+  return nft.mint(liquidityParams);
 }
 
 export async function createPoolWithMultiplePositions(
   nft: MockTimeNonfungiblePositionManager,
   wallet: Wallet,
   tokenAddressA: string,
-  tokenAddressB: string
+  tokenAddressB: string,
 ) {
   if (tokenAddressA.toLowerCase() > tokenAddressB.toLowerCase())
-    [tokenAddressA, tokenAddressB] = [tokenAddressB, tokenAddressA]
+    [tokenAddressA, tokenAddressB] = [tokenAddressB, tokenAddressA];
 
-  await nft.createAndInitializePoolIfNecessary(tokenAddressA, tokenAddressB, FeeAmount.MEDIUM, encodePriceSqrt(1, 1))
+  await nft.createAndInitializePoolIfNecessary(
+    tokenAddressA,
+    tokenAddressB,
+    FeeAmount.MEDIUM,
+    encodePriceSqrt(1, 1),
+  );
 
   const liquidityParams = {
     token0: tokenAddressA,
@@ -55,9 +65,9 @@ export async function createPoolWithMultiplePositions(
     amount0Min: 0,
     amount1Min: 0,
     deadline: 1,
-  }
+  };
 
-  await nft.mint(liquidityParams)
+  await nft.mint(liquidityParams);
 
   const liquidityParams2 = {
     token0: tokenAddressA,
@@ -71,9 +81,9 @@ export async function createPoolWithMultiplePositions(
     amount0Min: 0,
     amount1Min: 0,
     deadline: 1,
-  }
+  };
 
-  await nft.mint(liquidityParams2)
+  await nft.mint(liquidityParams2);
 
   const liquidityParams3 = {
     token0: tokenAddressA,
@@ -87,21 +97,26 @@ export async function createPoolWithMultiplePositions(
     amount0Min: 0,
     amount1Min: 0,
     deadline: 1,
-  }
+  };
 
-  return nft.mint(liquidityParams3)
+  return nft.mint(liquidityParams3);
 }
 
 export async function createPoolWithZeroTickInitialized(
   nft: MockTimeNonfungiblePositionManager,
   wallet: Wallet,
   tokenAddressA: string,
-  tokenAddressB: string
+  tokenAddressB: string,
 ) {
   if (tokenAddressA.toLowerCase() > tokenAddressB.toLowerCase())
-    [tokenAddressA, tokenAddressB] = [tokenAddressB, tokenAddressA]
+    [tokenAddressA, tokenAddressB] = [tokenAddressB, tokenAddressA];
 
-  await nft.createAndInitializePoolIfNecessary(tokenAddressA, tokenAddressB, FeeAmount.MEDIUM, encodePriceSqrt(1, 1))
+  await nft.createAndInitializePoolIfNecessary(
+    tokenAddressA,
+    tokenAddressB,
+    FeeAmount.MEDIUM,
+    encodePriceSqrt(1, 1),
+  );
 
   const liquidityParams = {
     token0: tokenAddressA,
@@ -115,9 +130,9 @@ export async function createPoolWithZeroTickInitialized(
     amount0Min: 0,
     amount1Min: 0,
     deadline: 1,
-  }
+  };
 
-  await nft.mint(liquidityParams)
+  await nft.mint(liquidityParams);
 
   const liquidityParams2 = {
     token0: tokenAddressA,
@@ -131,9 +146,9 @@ export async function createPoolWithZeroTickInitialized(
     amount0Min: 0,
     amount1Min: 0,
     deadline: 1,
-  }
+  };
 
-  await nft.mint(liquidityParams2)
+  await nft.mint(liquidityParams2);
 
   const liquidityParams3 = {
     token0: tokenAddressA,
@@ -147,7 +162,7 @@ export async function createPoolWithZeroTickInitialized(
     amount0Min: 0,
     amount1Min: 0,
     deadline: 1,
-  }
+  };
 
-  return nft.mint(liquidityParams3)
+  return nft.mint(liquidityParams3);
 }

@@ -6,13 +6,13 @@ pragma solidity >=0.6.0;
 import '../libraries/PoolTicksCounter.sol';
 
 contract PoolTicksCounterTest {
-    using PoolTicksCounter for IUniswapV3Pool;
+  using PoolTicksCounter for IUniswapV3Pool;
 
-    function countInitializedTicksCrossed(
-        IUniswapV3Pool pool,
-        int24 tickBefore,
-        int24 tickAfter
-    ) external view returns (uint32 initializedTicksCrossed) {
-        return pool.countInitializedTicksCrossed(tickBefore, tickAfter);
-    }
+  function countInitializedTicksCrossed(
+    IUniswapV3Pool pool,
+    int24 tickBefore,
+    int24 tickAfter
+  ) external view returns (uint32 initializedTicksCrossed) {
+    return pool.countInitializedTicksCrossed(tickBefore, tickAfter);
+  }
 }

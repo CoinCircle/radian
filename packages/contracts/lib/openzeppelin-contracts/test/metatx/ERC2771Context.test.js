@@ -1,15 +1,15 @@
 const ethSigUtil = require('eth-sig-util');
 const Wallet = require('ethereumjs-wallet').default;
-const { EIP712Domain } = require('../helpers/eip712');
+const {EIP712Domain} = require('../helpers/eip712');
 
-const { expectEvent } = require('@openzeppelin/test-helpers');
-const { expect } = require('chai');
+const {expectEvent} = require('@openzeppelin/test-helpers');
+const {expect} = require('chai');
 
 const ERC2771ContextMock = artifacts.require('ERC2771ContextMock');
 const MinimalForwarder = artifacts.require('MinimalForwarder');
 const ContextMockCaller = artifacts.require('ContextMockCaller');
 
-const { shouldBehaveLikeRegularContext } = require('../utils/Context.behavior');
+const {shouldBehaveLikeRegularContext} = require('../utils/Context.behavior');
 
 const name = 'MinimalForwarder';
 const version = '0.0.1';
@@ -28,12 +28,12 @@ contract('ERC2771Context', function (accounts) {
     this.types = {
       EIP712Domain,
       ForwardRequest: [
-        { name: 'from', type: 'address' },
-        { name: 'to', type: 'address' },
-        { name: 'value', type: 'uint256' },
-        { name: 'gas', type: 'uint256' },
-        { name: 'nonce', type: 'uint256' },
-        { name: 'data', type: 'bytes' },
+        {name: 'from', type: 'address'},
+        {name: 'to', type: 'address'},
+        {name: 'value', type: 'uint256'},
+        {name: 'gas', type: 'uint256'},
+        {name: 'nonce', type: 'uint256'},
+        {name: 'data', type: 'bytes'},
       ],
     };
   });
@@ -75,11 +75,13 @@ contract('ERC2771Context', function (accounts) {
           data,
         };
 
-        const sign = ethSigUtil.signTypedMessage(this.wallet.getPrivateKey(), { data: { ...this.data, message: req } });
+        const sign = ethSigUtil.signTypedMessage(this.wallet.getPrivateKey(), {
+          data: {...this.data, message: req},
+        });
         expect(await this.forwarder.verify(req, sign)).to.equal(true);
 
-        const { tx } = await this.forwarder.execute(req, sign);
-        await expectEvent.inTransaction(tx, ERC2771ContextMock, 'Sender', { sender: this.sender });
+        const {tx} = await this.forwarder.execute(req, sign);
+        await expectEvent.inTransaction(tx, ERC2771ContextMock, 'Sender', {sender: this.sender});
       });
     });
 
@@ -98,11 +100,17 @@ contract('ERC2771Context', function (accounts) {
           data,
         };
 
-        const sign = ethSigUtil.signTypedMessage(this.wallet.getPrivateKey(), { data: { ...this.data, message: req } });
+        const sign = ethSigUtil.signTypedMessage(this.wallet.getPrivateKey(), {
+          data: {...this.data, message: req},
+        });
         expect(await this.forwarder.verify(req, sign)).to.equal(true);
 
-        const { tx } = await this.forwarder.execute(req, sign);
-        await expectEvent.inTransaction(tx, ERC2771ContextMock, 'Data', { data, integerValue, stringValue });
+        const {tx} = await this.forwarder.execute(req, sign);
+        await expectEvent.inTransaction(tx, ERC2771ContextMock, 'Data', {
+          data,
+          integerValue,
+          stringValue,
+        });
       });
     });
   });

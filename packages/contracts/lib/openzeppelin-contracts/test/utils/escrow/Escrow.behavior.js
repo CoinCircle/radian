@@ -1,14 +1,14 @@
-const { balance, ether, expectEvent, expectRevert } = require('@openzeppelin/test-helpers');
+const {balance, ether, expectEvent, expectRevert} = require('@openzeppelin/test-helpers');
 
-const { expect } = require('chai');
+const {expect} = require('chai');
 
-function shouldBehaveLikeEscrow (owner, [payee1, payee2]) {
+function shouldBehaveLikeEscrow(owner, [payee1, payee2]) {
   const amount = ether('42');
 
   describe('as an escrow', function () {
     describe('deposits', function () {
       it('can accept a single deposit', async function () {
-        await this.escrow.deposit(payee1, { from: owner, value: amount });
+        await this.escrow.deposit(payee1, {from: owner, value: amount});
 
         expect(await balance.current(this.escrow.address)).to.be.bignumber.equal(amount);
 
@@ -16,17 +16,18 @@ function shouldBehaveLikeEscrow (owner, [payee1, payee2]) {
       });
 
       it('can accept an empty deposit', async function () {
-        await this.escrow.deposit(payee1, { from: owner, value: 0 });
+        await this.escrow.deposit(payee1, {from: owner, value: 0});
       });
 
       it('only the owner can deposit', async function () {
-        await expectRevert(this.escrow.deposit(payee1, { from: payee2 }),
+        await expectRevert(
+          this.escrow.deposit(payee1, {from: payee2}),
           'Ownable: caller is not the owner',
         );
       });
 
       it('emits a deposited event', async function () {
-        const receipt = await this.escrow.deposit(payee1, { from: owner, value: amount });
+        const receipt = await this.escrow.deposit(payee1, {from: owner, value: amount});
         expectEvent(receipt, 'Deposited', {
           payee: payee1,
           weiAmount: amount,
@@ -34,8 +35,8 @@ function shouldBehaveLikeEscrow (owner, [payee1, payee2]) {
       });
 
       it('can add multiple deposits on a single account', async function () {
-        await this.escrow.deposit(payee1, { from: owner, value: amount });
-        await this.escrow.deposit(payee1, { from: owner, value: amount.muln(2) });
+        await this.escrow.deposit(payee1, {from: owner, value: amount});
+        await this.escrow.deposit(payee1, {from: owner, value: amount.muln(2)});
 
         expect(await balance.current(this.escrow.address)).to.be.bignumber.equal(amount.muln(3));
 
@@ -43,8 +44,8 @@ function shouldBehaveLikeEscrow (owner, [payee1, payee2]) {
       });
 
       it('can track deposits to multiple accounts', async function () {
-        await this.escrow.deposit(payee1, { from: owner, value: amount });
-        await this.escrow.deposit(payee2, { from: owner, value: amount.muln(2) });
+        await this.escrow.deposit(payee1, {from: owner, value: amount});
+        await this.escrow.deposit(payee2, {from: owner, value: amount.muln(2)});
 
         expect(await balance.current(this.escrow.address)).to.be.bignumber.equal(amount.muln(3));
 
@@ -58,8 +59,8 @@ function shouldBehaveLikeEscrow (owner, [payee1, payee2]) {
       it('can withdraw payments', async function () {
         const balanceTracker = await balance.tracker(payee1);
 
-        await this.escrow.deposit(payee1, { from: owner, value: amount });
-        await this.escrow.withdraw(payee1, { from: owner });
+        await this.escrow.deposit(payee1, {from: owner, value: amount});
+        await this.escrow.withdraw(payee1, {from: owner});
 
         expect(await balanceTracker.delta()).to.be.bignumber.equal(amount);
 
@@ -68,18 +69,19 @@ function shouldBehaveLikeEscrow (owner, [payee1, payee2]) {
       });
 
       it('can do an empty withdrawal', async function () {
-        await this.escrow.withdraw(payee1, { from: owner });
+        await this.escrow.withdraw(payee1, {from: owner});
       });
 
       it('only the owner can withdraw', async function () {
-        await expectRevert(this.escrow.withdraw(payee1, { from: payee1 }),
+        await expectRevert(
+          this.escrow.withdraw(payee1, {from: payee1}),
           'Ownable: caller is not the owner',
         );
       });
 
       it('emits a withdrawn event', async function () {
-        await this.escrow.deposit(payee1, { from: owner, value: amount });
-        const receipt = await this.escrow.withdraw(payee1, { from: owner });
+        await this.escrow.deposit(payee1, {from: owner, value: amount});
+        const receipt = await this.escrow.withdraw(payee1, {from: owner});
         expectEvent(receipt, 'Withdrawn', {
           payee: payee1,
           weiAmount: amount,

@@ -1,15 +1,13 @@
-const { expectRevert, BN } = require('@openzeppelin/test-helpers');
+const {expectRevert, BN} = require('@openzeppelin/test-helpers');
 
-const { expect } = require('chai');
+const {expect} = require('chai');
 
-const {
-  shouldBehaveLikeVotes,
-} = require('./Votes.behavior');
+const {shouldBehaveLikeVotes} = require('./Votes.behavior');
 
 const Votes = artifacts.require('VotesMock');
 
 contract('Votes', function (accounts) {
-  const [ account1, account2, account3 ] = accounts;
+  const [account1, account2, account3] = accounts;
   beforeEach(async function () {
     this.name = 'My Vote';
     this.votes = await Votes.new(this.name);

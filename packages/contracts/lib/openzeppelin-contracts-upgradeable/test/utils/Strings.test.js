@@ -1,6 +1,6 @@
-const { BN, constants, expectRevert } = require('@openzeppelin/test-helpers');
+const {BN, constants, expectRevert} = require('@openzeppelin/test-helpers');
 
-const { expect } = require('chai');
+const {expect} = require('chai');
 
 const StringsMock = artifacts.require('StringsMock');
 
@@ -10,28 +10,30 @@ contract('Strings', function (accounts) {
   });
 
   describe('toString', function () {
-    for (const [ key, value ] of Object.entries([
-      '0',
-      '7',
-      '10',
-      '99',
-      '100',
-      '101',
-      '123',
-      '4132',
-      '12345',
-      '1234567',
-      '1234567890',
-      '123456789012345',
-      '12345678901234567890',
-      '123456789012345678901234567890',
-      '1234567890123456789012345678901234567890',
-      '12345678901234567890123456789012345678901234567890',
-      '123456789012345678901234567890123456789012345678901234567890',
-      '1234567890123456789012345678901234567890123456789012345678901234567890',
-    ].reduce((acc, value) => Object.assign(acc, { [value]: new BN(value) }), {
-      MAX_UINT256: constants.MAX_UINT256.toString(),
-    }))) {
+    for (const [key, value] of Object.entries(
+      [
+        '0',
+        '7',
+        '10',
+        '99',
+        '100',
+        '101',
+        '123',
+        '4132',
+        '12345',
+        '1234567',
+        '1234567890',
+        '123456789012345',
+        '12345678901234567890',
+        '123456789012345678901234567890',
+        '1234567890123456789012345678901234567890',
+        '12345678901234567890123456789012345678901234567890',
+        '123456789012345678901234567890123456789012345678901234567890',
+        '1234567890123456789012345678901234567890123456789012345678901234567890',
+      ].reduce((acc, value) => Object.assign(acc, {[value]: new BN(value)}), {
+        MAX_UINT256: constants.MAX_UINT256.toString(),
+      }),
+    )) {
       it(`converts ${key}`, async function () {
         expect(await this.strings.methods['toString(uint256)'](value)).to.equal(value.toString(10));
       });
@@ -48,15 +50,17 @@ contract('Strings', function (accounts) {
     });
 
     it('converts MAX_UINT256', async function () {
-      expect(await this.strings.methods['toHexString(uint256)'](constants.MAX_UINT256))
-        .to.equal(web3.utils.toHex(constants.MAX_UINT256));
+      expect(await this.strings.methods['toHexString(uint256)'](constants.MAX_UINT256)).to.equal(
+        web3.utils.toHex(constants.MAX_UINT256),
+      );
     });
   });
 
   describe('toHexString fixed', function () {
     it('converts a positive number (long)', async function () {
-      expect(await this.strings.methods['toHexString(uint256,uint256)'](0x4132, 32))
-        .to.equal('0x0000000000000000000000000000000000000000000000000000000000004132');
+      expect(await this.strings.methods['toHexString(uint256,uint256)'](0x4132, 32)).to.equal(
+        '0x0000000000000000000000000000000000000000000000000000000000004132',
+      );
     });
 
     it('converts a positive number (short)', async function () {
@@ -67,8 +71,9 @@ contract('Strings', function (accounts) {
     });
 
     it('converts MAX_UINT256', async function () {
-      expect(await this.strings.methods['toHexString(uint256,uint256)'](constants.MAX_UINT256, 32))
-        .to.equal(web3.utils.toHex(constants.MAX_UINT256));
+      expect(
+        await this.strings.methods['toHexString(uint256,uint256)'](constants.MAX_UINT256, 32),
+      ).to.equal(web3.utils.toHex(constants.MAX_UINT256));
     });
   });
 

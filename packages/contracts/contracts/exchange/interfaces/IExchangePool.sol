@@ -13,12 +13,10 @@ import './pool/IExchangePoolEvents.sol';
 /// to the ERC20 specification
 /// @dev The pool interface is broken up into many smaller pieces
 interface IExchangePool is
-    IExchangePoolImmutables,
-    IExchangePoolState,
-    IExchangePoolDerivedState,
-    IExchangePoolActions,
-    IExchangePoolOwnerActions,
-    IExchangePoolEvents
-{
-
-}
+  IExchangePoolImmutables,
+  IExchangePoolState,
+  IExchangePoolDerivedState,
+  IExchangePoolActions,
+  IExchangePoolOwnerActions,
+  IExchangePoolEvents
+{}

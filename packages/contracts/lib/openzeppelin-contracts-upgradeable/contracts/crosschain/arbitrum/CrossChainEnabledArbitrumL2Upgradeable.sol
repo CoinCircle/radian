@@ -3,9 +3,9 @@
 
 pragma solidity ^0.8.4;
 
-import "../CrossChainEnabledUpgradeable.sol";
-import "./LibArbitrumL2Upgradeable.sol";
-import "../../proxy/utils/Initializable.sol";
+import '../CrossChainEnabledUpgradeable.sol';
+import './LibArbitrumL2Upgradeable.sol';
+import '../../proxy/utils/Initializable.sol';
 
 /**
  * @dev https://arbitrum.io/[Arbitrum] specialization or the
@@ -24,30 +24,31 @@ import "../../proxy/utils/Initializable.sol";
  * fixed when the network is upgraded to Arbitrum Nitro, currently scheduled for
  * August 31st 2022.
  */
-abstract contract CrossChainEnabledArbitrumL2Upgradeable is Initializable, CrossChainEnabledUpgradeable {
-    function __CrossChainEnabledArbitrumL2_init() internal onlyInitializing {
-    }
+abstract contract CrossChainEnabledArbitrumL2Upgradeable is
+  Initializable,
+  CrossChainEnabledUpgradeable
+{
+  function __CrossChainEnabledArbitrumL2_init() internal onlyInitializing {}
 
-    function __CrossChainEnabledArbitrumL2_init_unchained() internal onlyInitializing {
-    }
-    /**
-     * @dev see {CrossChainEnabled-_isCrossChain}
-     */
-    function _isCrossChain() internal view virtual override returns (bool) {
-        return LibArbitrumL2Upgradeable.isCrossChain(LibArbitrumL2Upgradeable.ARBSYS);
-    }
+  function __CrossChainEnabledArbitrumL2_init_unchained() internal onlyInitializing {}
+  /**
+   * @dev see {CrossChainEnabled-_isCrossChain}
+   */
+  function _isCrossChain() internal view virtual override returns (bool) {
+    return LibArbitrumL2Upgradeable.isCrossChain(LibArbitrumL2Upgradeable.ARBSYS);
+  }
 
-    /**
-     * @dev see {CrossChainEnabled-_crossChainSender}
-     */
-    function _crossChainSender() internal view virtual override onlyCrossChain returns (address) {
-        return LibArbitrumL2Upgradeable.crossChainSender(LibArbitrumL2Upgradeable.ARBSYS);
-    }
+  /**
+   * @dev see {CrossChainEnabled-_crossChainSender}
+   */
+  function _crossChainSender() internal view virtual override onlyCrossChain returns (address) {
+    return LibArbitrumL2Upgradeable.crossChainSender(LibArbitrumL2Upgradeable.ARBSYS);
+  }
 
-    /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
-     * variables without shifting down storage in the inheritance chain.
-     * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
-     */
-    uint256[50] private __gap;
+  /**
+   * @dev This empty reserved space is put in place to allow future versions to add new
+   * variables without shifting down storage in the inheritance chain.
+   * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
+   */
+  uint256[50] private __gap;
 }

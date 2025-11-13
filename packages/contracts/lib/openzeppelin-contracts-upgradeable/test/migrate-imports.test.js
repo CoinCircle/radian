@@ -1,8 +1,15 @@
 const path = require('path');
-const { promises: fs, constants: { F_OK } } = require('fs');
-const { expect } = require('chai');
+const {
+  promises: fs,
+  constants: {F_OK},
+} = require('fs');
+const {expect} = require('chai');
 
-const { pathUpdates, updateImportPaths, getUpgradeablePath } = require('../scripts/migrate-imports.js');
+const {
+  pathUpdates,
+  updateImportPaths,
+  getUpgradeablePath,
+} = require('../scripts/migrate-imports.js');
 
 describe('migrate-imports.js', function () {
   it('every new path exists', async function () {

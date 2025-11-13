@@ -1,12 +1,12 @@
-const { BN, expectRevert, time } = require('@openzeppelin/test-helpers');
+const {BN, expectRevert, time} = require('@openzeppelin/test-helpers');
 
-const { expect } = require('chai');
+const {expect} = require('chai');
 
 const ERC20Mock = artifacts.require('ERC20Mock');
 const TokenTimelock = artifacts.require('TokenTimelock');
 
 contract('TokenTimelock', function (accounts) {
-  const [ beneficiary ] = accounts;
+  const [beneficiary] = accounts;
 
   const name = 'My Token';
   const symbol = 'MTKN';
@@ -40,12 +40,18 @@ contract('TokenTimelock', function (accounts) {
       });
 
       it('cannot be released before time limit', async function () {
-        await expectRevert(this.timelock.release(), 'TokenTimelock: current time is before release time');
+        await expectRevert(
+          this.timelock.release(),
+          'TokenTimelock: current time is before release time',
+        );
       });
 
       it('cannot be released just before time limit', async function () {
         await time.increaseTo(this.releaseTime.sub(time.duration.seconds(3)));
-        await expectRevert(this.timelock.release(), 'TokenTimelock: current time is before release time');
+        await expectRevert(
+          this.timelock.release(),
+          'TokenTimelock: current time is before release time',
+        );
       });
 
       it('can be released just after limit', async function () {

@@ -5,7 +5,7 @@
 // Thus, we need to handle these warnings separately. We force Hardhat to compile them in a separate compilation job and
 // then ignore the warnings about unreachable code that come from that compilation job.
 
-const { task } = require('hardhat/config');
+const {task} = require('hardhat/config');
 const {
   TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE,
   TASK_COMPILE_SOLIDITY_COMPILE,
@@ -18,11 +18,14 @@ task(TASK_COMPILE_SOLIDITY_GET_COMPILATION_JOB_FOR_FILE, async (params, _, runSu
   const job = await runSuper(params);
   // If the file is in the unreachable directory, we make a copy of the config and mark it, which will cause it to get
   // compiled separately (along with the other marked files).
-  if (params.file.sourceName.startsWith('contracts/mocks/') && /\bunreachable\b/.test(params.file.sourceName)) {
+  if (
+    params.file.sourceName.startsWith('contracts/mocks/') &&
+    /\bunreachable\b/.test(params.file.sourceName)
+  ) {
     const originalConfig = job.solidityConfig;
     let markedConfig = markedCache.get(originalConfig);
     if (markedConfig === undefined) {
-      markedConfig = { ...originalConfig, [marker]: true };
+      markedConfig = {...originalConfig, [marker]: true};
       markedCache.set(originalConfig, markedConfig);
     }
     job.solidityConfig = markedConfig;

@@ -1,7 +1,7 @@
-const { BN, constants, expectRevert } = require('@openzeppelin/test-helpers');
-const { MAX_INT256, MIN_INT256 } = constants;
+const {BN, constants, expectRevert} = require('@openzeppelin/test-helpers');
+const {MAX_INT256, MIN_INT256} = constants;
 
-const { expect } = require('chai');
+const {expect} = require('chai');
 
 const SignedSafeMathMock = artifacts.require('SignedSafeMathMock');
 
@@ -10,12 +10,12 @@ contract('SignedSafeMath', function (accounts) {
     this.safeMath = await SignedSafeMathMock.new();
   });
 
-  async function testCommutative (fn, lhs, rhs, expected) {
+  async function testCommutative(fn, lhs, rhs, expected) {
     expect(await fn(lhs, rhs)).to.be.bignumber.equal(expected);
     expect(await fn(rhs, lhs)).to.be.bignumber.equal(expected);
   }
 
-  async function testFailsCommutative (fn, lhs, rhs) {
+  async function testFailsCommutative(fn, lhs, rhs) {
     await expectRevert.unspecified(fn(lhs, rhs));
     await expectRevert.unspecified(fn(rhs, lhs));
   }

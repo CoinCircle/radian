@@ -3,7 +3,7 @@
 
 pragma solidity ^0.8.0;
 
-import "./ERC20Votes.sol";
+import './ERC20Votes.sol';
 
 /**
  * @dev Extension of ERC20 to support Compound's voting and delegation. This version exactly matches Compound's
@@ -23,24 +23,27 @@ import "./ERC20Votes.sol";
  * _Available since v4.2._
  */
 abstract contract ERC20VotesComp is ERC20Votes {
-    /**
-     * @dev Comp version of the {getVotes} accessor, with `uint96` return type.
-     */
-    function getCurrentVotes(address account) external view virtual returns (uint96) {
-        return SafeCast.toUint96(getVotes(account));
-    }
+  /**
+   * @dev Comp version of the {getVotes} accessor, with `uint96` return type.
+   */
+  function getCurrentVotes(address account) external view virtual returns (uint96) {
+    return SafeCast.toUint96(getVotes(account));
+  }
 
-    /**
-     * @dev Comp version of the {getPastVotes} accessor, with `uint96` return type.
-     */
-    function getPriorVotes(address account, uint256 blockNumber) external view virtual returns (uint96) {
-        return SafeCast.toUint96(getPastVotes(account, blockNumber));
-    }
+  /**
+   * @dev Comp version of the {getPastVotes} accessor, with `uint96` return type.
+   */
+  function getPriorVotes(
+    address account,
+    uint256 blockNumber
+  ) external view virtual returns (uint96) {
+    return SafeCast.toUint96(getPastVotes(account, blockNumber));
+  }
 
-    /**
-     * @dev Maximum token supply. Reduced to `type(uint96).max` (2^96^ - 1) to fit COMP interface.
-     */
-    function _maxSupply() internal view virtual override returns (uint224) {
-        return type(uint96).max;
-    }
+  /**
+   * @dev Maximum token supply. Reduced to `type(uint96).max` (2^96^ - 1) to fit COMP interface.
+   */
+  function _maxSupply() internal view virtual override returns (uint224) {
+    return type(uint96).max;
+  }
 }

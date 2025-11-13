@@ -1,10 +1,10 @@
-const { BN, constants, expectRevert } = require('@openzeppelin/test-helpers');
-const { expect } = require('chai');
-const { ZERO_ADDRESS } = constants;
+const {BN, constants, expectRevert} = require('@openzeppelin/test-helpers');
+const {expect} = require('chai');
+const {ZERO_ADDRESS} = constants;
 
-const { shouldSupportInterfaces } = require('../../utils/introspection/SupportsInterface.behavior');
+const {shouldSupportInterfaces} = require('../../utils/introspection/SupportsInterface.behavior');
 
-function shouldBehaveLikeERC2981 () {
+function shouldBehaveLikeERC2981() {
   const royaltyFraction = new BN('10');
 
   shouldSupportInterfaces(['ERC2981']);

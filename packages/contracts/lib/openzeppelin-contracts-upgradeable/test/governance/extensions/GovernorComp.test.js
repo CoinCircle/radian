@@ -1,14 +1,14 @@
-const { BN } = require('@openzeppelin/test-helpers');
-const { expect } = require('chai');
+const {BN} = require('@openzeppelin/test-helpers');
+const {expect} = require('chai');
 const Enums = require('../../helpers/enums');
-const { GovernorHelper } = require('../../helpers/governance');
+const {GovernorHelper} = require('../../helpers/governance');
 
 const Token = artifacts.require('ERC20VotesCompMock');
 const Governor = artifacts.require('GovernorCompMock');
 const CallReceiver = artifacts.require('CallReceiverMock');
 
 contract('GovernorComp', function (accounts) {
-  const [ owner, voter1, voter2, voter3, voter4 ] = accounts;
+  const [owner, voter1, voter2, voter3, voter4] = accounts;
 
   const name = 'OZ-Governor';
   // const version = '1';
@@ -27,22 +27,37 @@ contract('GovernorComp', function (accounts) {
 
     this.helper = new GovernorHelper(this.mock);
 
-    await web3.eth.sendTransaction({ from: owner, to: this.mock.address, value });
+    await web3.eth.sendTransaction({from: owner, to: this.mock.address, value});
 
     await this.token.mint(owner, tokenSupply);
-    await this.helper.delegate({ token: this.token, to: voter1, value: web3.utils.toWei('10') }, { from: owner });
-    await this.helper.delegate({ token: this.token, to: voter2, value: web3.utils.toWei('7') }, { from: owner });
-    await this.helper.delegate({ token: this.token, to: voter3, value: web3.utils.toWei('5') }, { from: owner });
-    await this.helper.delegate({ token: this.token, to: voter4, value: web3.utils.toWei('2') }, { from: owner });
+    await this.helper.delegate(
+      {token: this.token, to: voter1, value: web3.utils.toWei('10')},
+      {from: owner},
+    );
+    await this.helper.delegate(
+      {token: this.token, to: voter2, value: web3.utils.toWei('7')},
+      {from: owner},
+    );
+    await this.helper.delegate(
+      {token: this.token, to: voter3, value: web3.utils.toWei('5')},
+      {from: owner},
+    );
+    await this.helper.delegate(
+      {token: this.token, to: voter4, value: web3.utils.toWei('2')},
+      {from: owner},
+    );
 
     // default proposal
-    this.proposal = this.helper.setProposal([
-      {
-        target: this.receiver.address,
-        value,
-        data: this.receiver.contract.methods.mockFunction().encodeABI(),
-      },
-    ], '<proposal description>');
+    this.proposal = this.helper.setProposal(
+      [
+        {
+          target: this.receiver.address,
+          value,
+          data: this.receiver.contract.methods.mockFunction().encodeABI(),
+        },
+      ],
+      '<proposal description>',
+    );
   });
 
   it('deployment check', async function () {
@@ -56,10 +71,10 @@ contract('GovernorComp', function (accounts) {
   it('voting with comp token', async function () {
     await this.helper.propose();
     await this.helper.waitForSnapshot();
-    await this.helper.vote({ support: Enums.VoteType.For }, { from: voter1 });
-    await this.helper.vote({ support: Enums.VoteType.For }, { from: voter2 });
-    await this.helper.vote({ support: Enums.VoteType.Against }, { from: voter3 });
-    await this.helper.vote({ support: Enums.VoteType.Abstain }, { from: voter4 });
+    await this.helper.vote({support: Enums.VoteType.For}, {from: voter1});
+    await this.helper.vote({support: Enums.VoteType.For}, {from: voter2});
+    await this.helper.vote({support: Enums.VoteType.Against}, {from: voter3});
+    await this.helper.vote({support: Enums.VoteType.Abstain}, {from: voter4});
     await this.helper.waitForDeadline();
     await this.helper.execute();
 

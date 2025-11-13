@@ -4,13 +4,13 @@ pragma solidity ^0.8.0;
 pragma abicoder v2;
 
 interface IEulerExec {
-    function deferLiquidityCheck(address account, bytes memory data) external;
+  function deferLiquidityCheck(address account, bytes memory data) external;
 }
 
 interface IDToken {
-    function underlyingAsset() external view returns (address);
+  function underlyingAsset() external view returns (address);
 
-    function borrow(uint256 subAccountId, uint256 amount) external;
+  function borrow(uint256 subAccountId, uint256 amount) external;
 
-    function repay(uint256 subAccountId, uint256 amount) external;
+  function repay(uint256 subAccountId, uint256 amount) external;
 }

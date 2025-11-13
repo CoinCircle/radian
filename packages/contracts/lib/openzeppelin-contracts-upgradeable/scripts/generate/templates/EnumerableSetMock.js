@@ -1,9 +1,9 @@
 const format = require('../format-lines');
 
 const TYPES = [
-  { name: 'Bytes32Set', type: 'bytes32' },
-  { name: 'AddressSet', type: 'address' },
-  { name: 'UintSet', type: 'uint256' },
+  {name: 'Bytes32Set', type: 'bytes32'},
+  {name: 'AddressSet', type: 'address'},
+  {name: 'UintSet', type: 'uint256'},
 ];
 
 const header = `\
@@ -12,7 +12,7 @@ pragma solidity ^0.8.0;
 import "../utils/structs/EnumerableSet.sol";
 `;
 
-const customSetMock = ({ name, type }) => `\
+const customSetMock = ({name, type}) => `\
 // ${name}
 contract Enumerable${name}Mock {
     using EnumerableSet for EnumerableSet.${name};
@@ -50,7 +50,4 @@ contract Enumerable${name}Mock {
 `;
 
 // GENERATE
-module.exports = format(
-  header,
-  ...TYPES.map(details => customSetMock(details)),
-);
+module.exports = format(header, ...TYPES.map(details => customSetMock(details)));

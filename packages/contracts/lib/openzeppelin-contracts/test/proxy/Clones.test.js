@@ -1,6 +1,6 @@
-const { expectEvent, expectRevert } = require('@openzeppelin/test-helpers');
-const { computeCreate2Address } = require('../helpers/create2');
-const { expect } = require('chai');
+const {expectEvent, expectRevert} = require('@openzeppelin/test-helpers');
+const {computeCreate2Address} = require('../helpers/create2');
+const {expect} = require('chai');
 
 const shouldBehaveLikeClone = require('./Clones.behaviour');
 
@@ -10,9 +10,9 @@ contract('Clones', function (accounts) {
   describe('clone', function () {
     shouldBehaveLikeClone(async (implementation, initData, opts = {}) => {
       const factory = await ClonesMock.new();
-      const receipt = await factory.clone(implementation, initData, { value: opts.value });
-      const address = receipt.logs.find(({ event }) => event === 'NewInstance').args.instance;
-      return { address };
+      const receipt = await factory.clone(implementation, initData, {value: opts.value});
+      const address = receipt.logs.find(({event}) => event === 'NewInstance').args.instance;
+      return {address};
     });
   });
 
@@ -20,9 +20,11 @@ contract('Clones', function (accounts) {
     shouldBehaveLikeClone(async (implementation, initData, opts = {}) => {
       const salt = web3.utils.randomHex(32);
       const factory = await ClonesMock.new();
-      const receipt = await factory.cloneDeterministic(implementation, salt, initData, { value: opts.value });
-      const address = receipt.logs.find(({ event }) => event === 'NewInstance').args.instance;
-      return { address };
+      const receipt = await factory.cloneDeterministic(implementation, salt, initData, {
+        value: opts.value,
+      });
+      const address = receipt.logs.find(({event}) => event === 'NewInstance').args.instance;
+      return {address};
     });
 
     it('address already used', async function () {
@@ -30,10 +32,7 @@ contract('Clones', function (accounts) {
       const salt = web3.utils.randomHex(32);
       const factory = await ClonesMock.new();
       // deploy once
-      expectEvent(
-        await factory.cloneDeterministic(implementation, salt, '0x'),
-        'NewInstance',
-      );
+      expectEvent(await factory.cloneDeterministic(implementation, salt, '0x'), 'NewInstance');
       // deploy twice
       await expectRevert(
         factory.cloneDeterministic(implementation, salt, '0x'),
@@ -53,17 +52,11 @@ contract('Clones', function (accounts) {
         '5af43d82803e903d91602b57fd5bf3',
       ].join('');
 
-      expect(computeCreate2Address(
-        salt,
-        creationCode,
-        factory.address,
-      )).to.be.equal(predicted);
+      expect(computeCreate2Address(salt, creationCode, factory.address)).to.be.equal(predicted);
 
-      expectEvent(
-        await factory.cloneDeterministic(implementation, salt, '0x'),
-        'NewInstance',
-        { instance: predicted },
-      );
+      expectEvent(await factory.cloneDeterministic(implementation, salt, '0x'), 'NewInstance', {
+        instance: predicted,
+      });
     });
   });
 });

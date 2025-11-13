@@ -1,7 +1,7 @@
-const { BN, constants, expectEvent, expectRevert } = require('@openzeppelin/test-helpers');
-const { ZERO_ADDRESS } = constants;
+const {BN, constants, expectEvent, expectRevert} = require('@openzeppelin/test-helpers');
+const {ZERO_ADDRESS} = constants;
 
-const { expect } = require('chai');
+const {expect} = require('chai');
 
 const ERC721BurnableMock = artifacts.require('ERC721BurnableMock');
 
@@ -31,14 +31,11 @@ contract('ERC721Burnable', function (accounts) {
 
       describe('when successful', function () {
         beforeEach(async function () {
-          receipt = await this.token.burn(tokenId, { from: owner });
+          receipt = await this.token.burn(tokenId, {from: owner});
         });
 
         it('burns the given token ID and adjusts the balance of the owner', async function () {
-          await expectRevert(
-            this.token.ownerOf(tokenId),
-            'ERC721: invalid token ID',
-          );
+          await expectRevert(this.token.ownerOf(tokenId), 'ERC721: invalid token ID');
           expect(await this.token.balanceOf(owner)).to.be.bignumber.equal('1');
         });
 
@@ -53,15 +50,13 @@ contract('ERC721Burnable', function (accounts) {
 
       describe('when there is a previous approval burned', function () {
         beforeEach(async function () {
-          await this.token.approve(approved, tokenId, { from: owner });
-          receipt = await this.token.burn(tokenId, { from: owner });
+          await this.token.approve(approved, tokenId, {from: owner});
+          receipt = await this.token.burn(tokenId, {from: owner});
         });
 
         context('getApproved', function () {
           it('reverts', async function () {
-            await expectRevert(
-              this.token.getApproved(tokenId), 'ERC721: invalid token ID',
-            );
+            await expectRevert(this.token.getApproved(tokenId), 'ERC721: invalid token ID');
           });
         });
       });
@@ -69,7 +64,8 @@ contract('ERC721Burnable', function (accounts) {
       describe('when the given token ID was not tracked by this contract', function () {
         it('reverts', async function () {
           await expectRevert(
-            this.token.burn(unknownTokenId, { from: owner }), 'ERC721: invalid token ID',
+            this.token.burn(unknownTokenId, {from: owner}),
+            'ERC721: invalid token ID',
           );
         });
       });

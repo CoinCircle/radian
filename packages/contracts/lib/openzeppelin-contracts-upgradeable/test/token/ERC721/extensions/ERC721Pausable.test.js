@@ -1,12 +1,12 @@
-const { BN, constants, expectRevert } = require('@openzeppelin/test-helpers');
-const { ZERO_ADDRESS } = constants;
+const {BN, constants, expectRevert} = require('@openzeppelin/test-helpers');
+const {ZERO_ADDRESS} = constants;
 
-const { expect } = require('chai');
+const {expect} = require('chai');
 
 const ERC721PausableMock = artifacts.require('ERC721PausableMock');
 
 contract('ERC721Pausable', function (accounts) {
-  const [ owner, receiver, operator ] = accounts;
+  const [owner, receiver, operator] = accounts;
 
   const name = 'Non Fungible Token';
   const symbol = 'NFT';
@@ -22,20 +22,20 @@ contract('ERC721Pausable', function (accounts) {
     const mockData = '0x42';
 
     beforeEach(async function () {
-      await this.token.mint(owner, firstTokenId, { from: owner });
+      await this.token.mint(owner, firstTokenId, {from: owner});
       await this.token.pause();
     });
 
     it('reverts when trying to transferFrom', async function () {
       await expectRevert(
-        this.token.transferFrom(owner, receiver, firstTokenId, { from: owner }),
+        this.token.transferFrom(owner, receiver, firstTokenId, {from: owner}),
         'ERC721Pausable: token transfer while paused',
       );
     });
 
     it('reverts when trying to safeTransferFrom', async function () {
       await expectRevert(
-        this.token.safeTransferFrom(owner, receiver, firstTokenId, { from: owner }),
+        this.token.safeTransferFrom(owner, receiver, firstTokenId, {from: owner}),
         'ERC721Pausable: token transfer while paused',
       );
     });
@@ -43,8 +43,13 @@ contract('ERC721Pausable', function (accounts) {
     it('reverts when trying to safeTransferFrom with data', async function () {
       await expectRevert(
         this.token.methods['safeTransferFrom(address,address,uint256,bytes)'](
-          owner, receiver, firstTokenId, mockData, { from: owner },
-        ), 'ERC721Pausable: token transfer while paused',
+          owner,
+          receiver,
+          firstTokenId,
+          mockData,
+          {from: owner},
+        ),
+        'ERC721Pausable: token transfer while paused',
       );
     });
 

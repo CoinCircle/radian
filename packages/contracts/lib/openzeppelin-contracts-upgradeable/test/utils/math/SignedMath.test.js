@@ -1,6 +1,6 @@
-const { BN, constants } = require('@openzeppelin/test-helpers');
-const { expect } = require('chai');
-const { MIN_INT256, MAX_INT256 } = constants;
+const {BN, constants} = require('@openzeppelin/test-helpers');
+const {expect} = require('chai');
+const {MIN_INT256, MAX_INT256} = constants;
 
 const SignedMathMock = artifacts.require('SignedMathMock');
 
@@ -33,7 +33,7 @@ contract('SignedMath', function (accounts) {
   });
 
   describe('average', function () {
-    function bnAverage (a, b) {
+    function bnAverage(a, b) {
       return a.add(b).divn(2);
     }
 
@@ -68,8 +68,10 @@ contract('SignedMath', function (accounts) {
 
       for (const x of valuesX) {
         for (const y of valuesY) {
-          expect(await this.math.average(x, y))
-            .to.be.bignumber.equal(bnAverage(x, y), `Bad result for average(${x}, ${y})`);
+          expect(await this.math.average(x, y)).to.be.bignumber.equal(
+            bnAverage(x, y),
+            `Bad result for average(${x}, ${y})`,
+          );
         }
       }
     });

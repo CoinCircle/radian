@@ -2,7 +2,7 @@
 const fs = require('fs');
 const proc = require('child_process');
 const semver = require('semver');
-const run = (cmd, ...args) => proc.execFileSync(cmd, args, { encoding: 'utf8' }).trim();
+const run = (cmd, ...args) => proc.execFileSync(cmd, args, {encoding: 'utf8'}).trim();
 
 const gitStatus = run('git', 'status', '--porcelain', '-uno', 'contracts/**/*.sol');
 if (gitStatus.length > 0) {
@@ -10,10 +10,10 @@ if (gitStatus.length > 0) {
   process.exit(1);
 }
 
-const { version } = require('../../package.json');
+const {version} = require('../../package.json');
 
 // Get latest tag according to semver.
-const [ tag ] = run('git', 'tag')
+const [tag] = run('git', 'tag')
   .split(/\r?\n/)
   .filter(semver.coerce) // check version can be processed
   .filter(v => semver.lt(semver.coerce(v), version)) // only consider older tags, ignore current prereleases

@@ -3,8 +3,8 @@
 
 pragma solidity ^0.8.4;
 
-import { IArbSysUpgradeable as ArbitrumL2_Bridge } from "../../vendor/arbitrum/IArbSysUpgradeable.sol";
-import "../errorsUpgradeable.sol";
+import {IArbSysUpgradeable as ArbitrumL2_Bridge} from '../../vendor/arbitrum/IArbSysUpgradeable.sol';
+import '../errorsUpgradeable.sol';
 
 /**
  * @dev Primitives for cross-chain aware contracts for
@@ -19,27 +19,27 @@ import "../errorsUpgradeable.sol";
  * August 31st 2022.
  */
 library LibArbitrumL2Upgradeable {
-    /**
-     * @dev Returns whether the current function call is the result of a
-     * cross-chain message relayed by `arbsys`.
-     */
-    address public constant ARBSYS = 0x0000000000000000000000000000000000000064;
+  /**
+   * @dev Returns whether the current function call is the result of a
+   * cross-chain message relayed by `arbsys`.
+   */
+  address public constant ARBSYS = 0x0000000000000000000000000000000000000064;
 
-    function isCrossChain(address arbsys) internal view returns (bool) {
-        return ArbitrumL2_Bridge(arbsys).wasMyCallersAddressAliased();
-    }
+  function isCrossChain(address arbsys) internal view returns (bool) {
+    return ArbitrumL2_Bridge(arbsys).wasMyCallersAddressAliased();
+  }
 
-    /**
-     * @dev Returns the address of the sender that triggered the current
-     * cross-chain message through `arbsys`.
-     *
-     * NOTE: {isCrossChain} should be checked before trying to recover the
-     * sender, as it will revert with `NotCrossChainCall` if the current
-     * function call is not the result of a cross-chain message.
-     */
-    function crossChainSender(address arbsys) internal view returns (address) {
-        if (!isCrossChain(arbsys)) revert NotCrossChainCall();
+  /**
+   * @dev Returns the address of the sender that triggered the current
+   * cross-chain message through `arbsys`.
+   *
+   * NOTE: {isCrossChain} should be checked before trying to recover the
+   * sender, as it will revert with `NotCrossChainCall` if the current
+   * function call is not the result of a cross-chain message.
+   */
+  function crossChainSender(address arbsys) internal view returns (address) {
+    if (!isCrossChain(arbsys)) revert NotCrossChainCall();
 
-        return ArbitrumL2_Bridge(arbsys).myCallersAddressWithoutAliasing();
-    }
+    return ArbitrumL2_Bridge(arbsys).myCallersAddressWithoutAliasing();
+  }
 }

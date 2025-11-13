@@ -2,8 +2,6 @@ pragma solidity ^0.8.0;
 
 // SPDX-License-Identifier: MIT
 
-
-
 /// @dev `keccak256("")`
 bytes32 constant EMPTY_STRING_KECCAK = 0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470;
 
@@ -27,14 +25,18 @@ bytes32 constant L2_L1_LOGS_TREE_DEFAULT_LEAF_HASH = 0x72abee45b59e344af8a6e5202
 uint256 constant INITIAL_STORAGE_CHANGE_SERIALIZE_SIZE = 64;
 
 /// @dev The maximum length of the bytes array with initial storage changes
-uint256 constant MAX_INITIAL_STORAGE_CHANGES_COMMITMENT_BYTES = 4 + INITIAL_STORAGE_CHANGE_SERIALIZE_SIZE * 4765;
+uint256 constant MAX_INITIAL_STORAGE_CHANGES_COMMITMENT_BYTES = 4 +
+  INITIAL_STORAGE_CHANGE_SERIALIZE_SIZE *
+  4765;
 
 /// @dev Number of bytes in a one repeated storage change
 /// @dev Equal to the bytes size of the tuple - (bytes8 key, bytes32 value)
 uint256 constant REPEATED_STORAGE_CHANGE_SERIALIZE_SIZE = 40;
 
 /// @dev The maximum length of the bytes array with repeated storage changes
-uint256 constant MAX_REPEATED_STORAGE_CHANGES_COMMITMENT_BYTES = 4 + REPEATED_STORAGE_CHANGE_SERIALIZE_SIZE * 7564;
+uint256 constant MAX_REPEATED_STORAGE_CHANGES_COMMITMENT_BYTES = 4 +
+  REPEATED_STORAGE_CHANGE_SERIALIZE_SIZE *
+  7564;
 
 // TODO: change constant to the real root hash of empty Merkle tree (SMA-184)
 bytes32 constant DEFAULT_L2_LOGS_TREE_ROOT_HASH = bytes32(0);

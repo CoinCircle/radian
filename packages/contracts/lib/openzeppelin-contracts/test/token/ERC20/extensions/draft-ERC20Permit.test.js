@@ -1,19 +1,19 @@
 /* eslint-disable */
 
-const { BN, constants, expectEvent, expectRevert, time } = require('@openzeppelin/test-helpers');
-const { expect } = require('chai');
-const { MAX_UINT256, ZERO_ADDRESS, ZERO_BYTES32 } = constants;
+const {BN, constants, expectEvent, expectRevert, time} = require('@openzeppelin/test-helpers');
+const {expect} = require('chai');
+const {MAX_UINT256, ZERO_ADDRESS, ZERO_BYTES32} = constants;
 
-const { fromRpcSig } = require('ethereumjs-util');
+const {fromRpcSig} = require('ethereumjs-util');
 const ethSigUtil = require('eth-sig-util');
 const Wallet = require('ethereumjs-wallet').default;
 
 const ERC20PermitMock = artifacts.require('ERC20PermitMock');
 
-const { EIP712Domain, Permit, domainSeparator } = require('../../../helpers/eip712');
+const {EIP712Domain, Permit, domainSeparator} = require('../../../helpers/eip712');
 
 contract('ERC20Permit', function (accounts) {
-  const [ initialHolder, spender, recipient, other ] = accounts;
+  const [initialHolder, spender, recipient, other] = accounts;
 
   const name = 'My Token';
   const symbol = 'MTKN';
@@ -35,9 +35,7 @@ contract('ERC20Permit', function (accounts) {
   });
 
   it('domain separator', async function () {
-    expect(
-      await this.token.DOMAIN_SEPARATOR(),
-    ).to.equal(
+    expect(await this.token.DOMAIN_SEPARATOR()).to.equal(
       await domainSeparator(name, version, this.chainId, this.token.address),
     );
   });
@@ -52,15 +50,15 @@ contract('ERC20Permit', function (accounts) {
 
     const buildData = (chainId, verifyingContract, deadline = maxDeadline) => ({
       primaryType: 'Permit',
-      types: { EIP712Domain, Permit },
-      domain: { name, version, chainId, verifyingContract },
-      message: { owner, spender, value, nonce, deadline },
+      types: {EIP712Domain, Permit},
+      domain: {name, version, chainId, verifyingContract},
+      message: {owner, spender, value, nonce, deadline},
     });
 
     it('accepts owner signature', async function () {
       const data = buildData(this.chainId, this.token.address);
-      const signature = ethSigUtil.signTypedMessage(wallet.getPrivateKey(), { data });
-      const { v, r, s } = fromRpcSig(signature);
+      const signature = ethSigUtil.signTypedMessage(wallet.getPrivateKey(), {data});
+      const {v, r, s} = fromRpcSig(signature);
 
       const receipt = await this.token.permit(owner, spender, value, maxDeadline, v, r, s);
 
@@ -70,8 +68,8 @@ contract('ERC20Permit', function (accounts) {
 
     it('rejects reused signature', async function () {
       const data = buildData(this.chainId, this.token.address);
-      const signature = ethSigUtil.signTypedMessage(wallet.getPrivateKey(), { data });
-      const { v, r, s } = fromRpcSig(signature);
+      const signature = ethSigUtil.signTypedMessage(wallet.getPrivateKey(), {data});
+      const {v, r, s} = fromRpcSig(signature);
 
       await this.token.permit(owner, spender, value, maxDeadline, v, r, s);
 
@@ -84,8 +82,8 @@ contract('ERC20Permit', function (accounts) {
     it('rejects other signature', async function () {
       const otherWallet = Wallet.generate();
       const data = buildData(this.chainId, this.token.address);
-      const signature = ethSigUtil.signTypedMessage(otherWallet.getPrivateKey(), { data });
-      const { v, r, s } = fromRpcSig(signature);
+      const signature = ethSigUtil.signTypedMessage(otherWallet.getPrivateKey(), {data});
+      const {v, r, s} = fromRpcSig(signature);
 
       await expectRevert(
         this.token.permit(owner, spender, value, maxDeadline, v, r, s),
@@ -97,8 +95,8 @@ contract('ERC20Permit', function (accounts) {
       const deadline = (await time.latest()) - time.duration.weeks(1);
 
       const data = buildData(this.chainId, this.token.address, deadline);
-      const signature = ethSigUtil.signTypedMessage(wallet.getPrivateKey(), { data });
-      const { v, r, s } = fromRpcSig(signature);
+      const signature = ethSigUtil.signTypedMessage(wallet.getPrivateKey(), {data});
+      const {v, r, s} = fromRpcSig(signature);
 
       await expectRevert(
         this.token.permit(owner, spender, value, deadline, v, r, s),

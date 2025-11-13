@@ -1,5 +1,5 @@
-const { expectEvent, expectRevert } = require('@openzeppelin/test-helpers');
-const { expect } = require('chai');
+const {expectEvent, expectRevert} = require('@openzeppelin/test-helpers');
+const {expect} = require('chai');
 
 const InitializableMock = artifacts.require('InitializableMock');
 const ConstructorInitializableMock = artifacts.require('ConstructorInitializableMock');
@@ -40,13 +40,19 @@ contract('Initializable', function (accounts) {
       });
 
       it('initializer does not run again', async function () {
-        await expectRevert(this.contract.initialize(), 'Initializable: contract is already initialized');
+        await expectRevert(
+          this.contract.initialize(),
+          'Initializable: contract is already initialized',
+        );
       });
     });
 
     describe('nested under an initializer', function () {
       it('initializer modifier reverts', async function () {
-        await expectRevert(this.contract.initializerNested(), 'Initializable: contract is already initialized');
+        await expectRevert(
+          this.contract.initializerNested(),
+          'Initializable: contract is already initialized',
+        );
       });
 
       it('onlyInitializing modifier succeeds', async function () {
@@ -56,7 +62,10 @@ contract('Initializable', function (accounts) {
     });
 
     it('cannot call onlyInitializable function outside the scope of an initializable function', async function () {
-      await expectRevert(this.contract.initializeOnlyInitializing(), 'Initializable: contract is not initializing');
+      await expectRevert(
+        this.contract.initializeOnlyInitializing(),
+        'Initializable: contract is not initializing',
+      );
     });
   });
 
@@ -98,9 +107,18 @@ contract('Initializable', function (accounts) {
 
     it('cannot nest reinitializers', async function () {
       expect(await this.contract.counter()).to.be.bignumber.equal('0');
-      await expectRevert(this.contract.nestedReinitialize(2, 2), 'Initializable: contract is already initialized');
-      await expectRevert(this.contract.nestedReinitialize(2, 3), 'Initializable: contract is already initialized');
-      await expectRevert(this.contract.nestedReinitialize(3, 2), 'Initializable: contract is already initialized');
+      await expectRevert(
+        this.contract.nestedReinitialize(2, 2),
+        'Initializable: contract is already initialized',
+      );
+      await expectRevert(
+        this.contract.nestedReinitialize(2, 3),
+        'Initializable: contract is already initialized',
+      );
+      await expectRevert(
+        this.contract.nestedReinitialize(3, 2),
+        'Initializable: contract is already initialized',
+      );
     });
 
     it('can chain reinitializers', async function () {
@@ -119,18 +137,27 @@ contract('Initializable', function (accounts) {
     describe('contract locking', function () {
       it('prevents initialization', async function () {
         await this.contract.disableInitializers();
-        await expectRevert(this.contract.initialize(), 'Initializable: contract is already initialized');
+        await expectRevert(
+          this.contract.initialize(),
+          'Initializable: contract is already initialized',
+        );
       });
 
       it('prevents re-initialization', async function () {
         await this.contract.disableInitializers();
-        await expectRevert(this.contract.reinitialize(255), 'Initializable: contract is already initialized');
+        await expectRevert(
+          this.contract.reinitialize(255),
+          'Initializable: contract is already initialized',
+        );
       });
 
       it('can lock contract after initialization', async function () {
         await this.contract.initialize();
         await this.contract.disableInitializers();
-        await expectRevert(this.contract.reinitialize(255), 'Initializable: contract is already initialized');
+        await expectRevert(
+          this.contract.reinitialize(255),
+          'Initializable: contract is already initialized',
+        );
       });
     });
   });
@@ -139,32 +166,34 @@ contract('Initializable', function (accounts) {
     it('constructor initialization emits event', async function () {
       const contract = await ConstructorInitializableMock.new();
 
-      await expectEvent.inTransaction(contract.transactionHash, contract, 'Initialized', { version: '1' });
+      await expectEvent.inTransaction(contract.transactionHash, contract, 'Initialized', {
+        version: '1',
+      });
     });
 
     it('initialization emits event', async function () {
       const contract = await ReinitializerMock.new();
 
-      const { receipt } = await contract.initialize();
-      expect(receipt.logs.filter(({ event }) => event === 'Initialized').length).to.be.equal(1);
-      expectEvent(receipt, 'Initialized', { version: '1' });
+      const {receipt} = await contract.initialize();
+      expect(receipt.logs.filter(({event}) => event === 'Initialized').length).to.be.equal(1);
+      expectEvent(receipt, 'Initialized', {version: '1'});
     });
 
     it('reinitialization emits event', async function () {
       const contract = await ReinitializerMock.new();
 
-      const { receipt } = await contract.reinitialize(128);
-      expect(receipt.logs.filter(({ event }) => event === 'Initialized').length).to.be.equal(1);
-      expectEvent(receipt, 'Initialized', { version: '128' });
+      const {receipt} = await contract.reinitialize(128);
+      expect(receipt.logs.filter(({event}) => event === 'Initialized').length).to.be.equal(1);
+      expectEvent(receipt, 'Initialized', {version: '128'});
     });
 
     it('chained reinitialization emits multiple events', async function () {
       const contract = await ReinitializerMock.new();
 
-      const { receipt } = await contract.chainReinitialize(2, 3);
-      expect(receipt.logs.filter(({ event }) => event === 'Initialized').length).to.be.equal(2);
-      expectEvent(receipt, 'Initialized', { version: '2' });
-      expectEvent(receipt, 'Initialized', { version: '3' });
+      const {receipt} = await contract.chainReinitialize(2, 3);
+      expect(receipt.logs.filter(({event}) => event === 'Initialized').length).to.be.equal(2);
+      expectEvent(receipt, 'Initialized', {version: '2'});
+      expectEvent(receipt, 'Initialized', {version: '3'});
     });
   });
 
@@ -211,8 +240,8 @@ contract('Initializable', function (accounts) {
 
     it('old and new patterns in good sequence', async function () {
       const ok = await DisableOk.new();
-      await expectEvent.inConstruction(ok, 'Initialized', { version: '1' });
-      await expectEvent.inConstruction(ok, 'Initialized', { version: '255' });
+      await expectEvent.inConstruction(ok, 'Initialized', {version: '1'});
+      await expectEvent.inConstruction(ok, 'Initialized', {version: '255'});
     });
   });
 });

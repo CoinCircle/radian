@@ -1,11 +1,11 @@
 const format = require('../format-lines');
-const { fromBytes32, toBytes32 } = require('./conversion');
+const {fromBytes32, toBytes32} = require('./conversion');
 
 const TYPES = [
-  { name: 'UintToUintMap', keyType: 'uint256', valueType: 'uint256' },
-  { name: 'UintToAddressMap', keyType: 'uint256', valueType: 'address' },
-  { name: 'AddressToUintMap', keyType: 'address', valueType: 'uint256' },
-  { name: 'Bytes32ToUintMap', keyType: 'bytes32', valueType: 'uint256' },
+  {name: 'UintToUintMap', keyType: 'uint256', valueType: 'uint256'},
+  {name: 'UintToAddressMap', keyType: 'uint256', valueType: 'address'},
+  {name: 'AddressToUintMap', keyType: 'address', valueType: 'uint256'},
+  {name: 'Bytes32ToUintMap', keyType: 'bytes32', valueType: 'uint256'},
 ];
 
 /* eslint-disable max-len */
@@ -170,7 +170,7 @@ function get(
 }
 `;
 
-const customMap = ({ name, keyType, valueType }) => `\
+const customMap = ({name, keyType, valueType}) => `\
 // ${name}
 
 struct ${name} {

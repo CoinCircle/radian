@@ -10,11 +10,14 @@ pragma solidity ^0.8.0;
  * {IERC1820Registry}.
  */
 interface IERC1820Implementer {
-    /**
-     * @dev Returns a special value (`ERC1820_ACCEPT_MAGIC`) if this contract
-     * implements `interfaceHash` for `account`.
-     *
-     * See {IERC1820Registry-setInterfaceImplementer}.
-     */
-    function canImplementInterfaceForAddress(bytes32 interfaceHash, address account) external view returns (bytes32);
+  /**
+   * @dev Returns a special value (`ERC1820_ACCEPT_MAGIC`) if this contract
+   * implements `interfaceHash` for `account`.
+   *
+   * See {IERC1820Registry-setInterfaceImplementer}.
+   */
+  function canImplementInterfaceForAddress(
+    bytes32 interfaceHash,
+    address account
+  ) external view returns (bytes32);
 }

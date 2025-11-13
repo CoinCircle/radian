@@ -1,6 +1,6 @@
-const { constants, BN } = require('@openzeppelin/test-helpers');
+const {constants, BN} = require('@openzeppelin/test-helpers');
 
-const { expect } = require('chai');
+const {expect} = require('chai');
 
 const StorageSlotMock = artifacts.require('StorageSlotMock');
 

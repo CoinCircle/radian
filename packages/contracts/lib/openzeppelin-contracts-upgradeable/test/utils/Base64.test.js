@@ -1,4 +1,4 @@
-const { expect } = require('chai');
+const {expect} = require('chai');
 
 const Base64Mock = artifacts.require('Base64Mock');
 

@@ -3,8 +3,8 @@
 
 pragma solidity ^0.8.0;
 
-import "./ERC20VotesUpgradeable.sol";
-import "../../../proxy/utils/Initializable.sol";
+import './ERC20VotesUpgradeable.sol';
+import '../../../proxy/utils/Initializable.sol';
 
 /**
  * @dev Extension of ERC20 to support Compound's voting and delegation. This version exactly matches Compound's
@@ -24,36 +24,37 @@ import "../../../proxy/utils/Initializable.sol";
  * _Available since v4.2._
  */
 abstract contract ERC20VotesCompUpgradeable is Initializable, ERC20VotesUpgradeable {
-    function __ERC20VotesComp_init() internal onlyInitializing {
-    }
+  function __ERC20VotesComp_init() internal onlyInitializing {}
 
-    function __ERC20VotesComp_init_unchained() internal onlyInitializing {
-    }
-    /**
-     * @dev Comp version of the {getVotes} accessor, with `uint96` return type.
-     */
-    function getCurrentVotes(address account) external view virtual returns (uint96) {
-        return SafeCastUpgradeable.toUint96(getVotes(account));
-    }
+  function __ERC20VotesComp_init_unchained() internal onlyInitializing {}
+  /**
+   * @dev Comp version of the {getVotes} accessor, with `uint96` return type.
+   */
+  function getCurrentVotes(address account) external view virtual returns (uint96) {
+    return SafeCastUpgradeable.toUint96(getVotes(account));
+  }
 
-    /**
-     * @dev Comp version of the {getPastVotes} accessor, with `uint96` return type.
-     */
-    function getPriorVotes(address account, uint256 blockNumber) external view virtual returns (uint96) {
-        return SafeCastUpgradeable.toUint96(getPastVotes(account, blockNumber));
-    }
+  /**
+   * @dev Comp version of the {getPastVotes} accessor, with `uint96` return type.
+   */
+  function getPriorVotes(
+    address account,
+    uint256 blockNumber
+  ) external view virtual returns (uint96) {
+    return SafeCastUpgradeable.toUint96(getPastVotes(account, blockNumber));
+  }
 
-    /**
-     * @dev Maximum token supply. Reduced to `type(uint96).max` (2^96^ - 1) to fit COMP interface.
-     */
-    function _maxSupply() internal view virtual override returns (uint224) {
-        return type(uint96).max;
-    }
+  /**
+   * @dev Maximum token supply. Reduced to `type(uint96).max` (2^96^ - 1) to fit COMP interface.
+   */
+  function _maxSupply() internal view virtual override returns (uint224) {
+    return type(uint96).max;
+  }
 
-    /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
-     * variables without shifting down storage in the inheritance chain.
-     * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
-     */
-    uint256[50] private __gap;
+  /**
+   * @dev This empty reserved space is put in place to allow future versions to add new
+   * variables without shifting down storage in the inheritance chain.
+   * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
+   */
+  uint256[50] private __gap;
 }

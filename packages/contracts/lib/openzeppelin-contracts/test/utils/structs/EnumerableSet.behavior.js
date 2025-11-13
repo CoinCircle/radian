@@ -1,8 +1,8 @@
-const { expectEvent, expectRevert } = require('@openzeppelin/test-helpers');
-const { expect } = require('chai');
+const {expectEvent, expectRevert} = require('@openzeppelin/test-helpers');
+const {expect} = require('chai');
 
-function shouldBehaveLikeSet (valueA, valueB, valueC) {
-  async function expectMembersMatch (set, values) {
+function shouldBehaveLikeSet(valueA, valueB, valueC) {
+  async function expectMembersMatch(set, values) {
     const contains = await Promise.all(values.map(value => set.contains(value)));
     expect(contains.every(Boolean)).to.be.equal(true);
 
@@ -11,17 +11,17 @@ function shouldBehaveLikeSet (valueA, valueB, valueC) {
 
     // To compare values we convert to strings to workaround Chai
     // limitations when dealing with nested arrays (required for BNs)
-    const indexedValues = await Promise.all(Array(values.length).fill().map((_, index) => set.at(index)));
-    expect(
-      indexedValues.map(v => v.toString()),
-    ).to.have.same.members(
+    const indexedValues = await Promise.all(
+      Array(values.length)
+        .fill()
+        .map((_, index) => set.at(index)),
+    );
+    expect(indexedValues.map(v => v.toString())).to.have.same.members(
       values.map(v => v.toString()),
     );
 
     const returnedValues = await set.values();
-    expect(
-      returnedValues.map(v => v.toString()),
-    ).to.have.same.members(
+    expect(returnedValues.map(v => v.toString())).to.have.same.members(
       values.map(v => v.toString()),
     );
   }
@@ -35,7 +35,7 @@ function shouldBehaveLikeSet (valueA, valueB, valueC) {
   describe('add', function () {
     it('adds a value', async function () {
       const receipt = await this.set.add(valueA);
-      expectEvent(receipt, 'OperationResult', { result: true });
+      expectEvent(receipt, 'OperationResult', {result: true});
 
       await expectMembersMatch(this.set, [valueA]);
     });
@@ -51,8 +51,8 @@ function shouldBehaveLikeSet (valueA, valueB, valueC) {
     it('returns false when adding values already in the set', async function () {
       await this.set.add(valueA);
 
-      const receipt = (await this.set.add(valueA));
-      expectEvent(receipt, 'OperationResult', { result: false });
+      const receipt = await this.set.add(valueA);
+      expectEvent(receipt, 'OperationResult', {result: false});
 
       await expectMembersMatch(this.set, [valueA]);
     });
@@ -69,7 +69,7 @@ function shouldBehaveLikeSet (valueA, valueB, valueC) {
       await this.set.add(valueA);
 
       const receipt = await this.set.remove(valueA);
-      expectEvent(receipt, 'OperationResult', { result: true });
+      expectEvent(receipt, 'OperationResult', {result: true});
 
       expect(await this.set.contains(valueA)).to.equal(false);
       await expectMembersMatch(this.set, []);
@@ -77,7 +77,7 @@ function shouldBehaveLikeSet (valueA, valueB, valueC) {
 
     it('returns false when removing values not in the set', async function () {
       const receipt = await this.set.remove(valueA);
-      expectEvent(receipt, 'OperationResult', { result: false });
+      expectEvent(receipt, 'OperationResult', {result: false});
 
       expect(await this.set.contains(valueA)).to.equal(false);
     });

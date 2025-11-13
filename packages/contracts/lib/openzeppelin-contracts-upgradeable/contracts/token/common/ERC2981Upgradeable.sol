@@ -3,9 +3,9 @@
 
 pragma solidity ^0.8.0;
 
-import "../../interfaces/IERC2981Upgradeable.sol";
-import "../../utils/introspection/ERC165Upgradeable.sol";
-import "../../proxy/utils/Initializable.sol";
+import '../../interfaces/IERC2981Upgradeable.sol';
+import '../../utils/introspection/ERC165Upgradeable.sol';
+import '../../proxy/utils/Initializable.sol';
 
 /**
  * @dev Implementation of the NFT Royalty Standard, a standardized way to retrieve royalty payment information.
@@ -23,102 +23,106 @@ import "../../proxy/utils/Initializable.sol";
  * _Available since v4.5._
  */
 abstract contract ERC2981Upgradeable is Initializable, IERC2981Upgradeable, ERC165Upgradeable {
-    function __ERC2981_init() internal onlyInitializing {
+  function __ERC2981_init() internal onlyInitializing {}
+
+  function __ERC2981_init_unchained() internal onlyInitializing {}
+  struct RoyaltyInfo {
+    address receiver;
+    uint96 royaltyFraction;
+  }
+
+  RoyaltyInfo private _defaultRoyaltyInfo;
+  mapping(uint256 => RoyaltyInfo) private _tokenRoyaltyInfo;
+
+  /**
+   * @dev See {IERC165-supportsInterface}.
+   */
+  function supportsInterface(
+    bytes4 interfaceId
+  ) public view virtual override(IERC165Upgradeable, ERC165Upgradeable) returns (bool) {
+    return
+      interfaceId == type(IERC2981Upgradeable).interfaceId || super.supportsInterface(interfaceId);
+  }
+
+  /**
+   * @inheritdoc IERC2981Upgradeable
+   */
+  function royaltyInfo(
+    uint256 _tokenId,
+    uint256 _salePrice
+  ) public view virtual override returns (address, uint256) {
+    RoyaltyInfo memory royalty = _tokenRoyaltyInfo[_tokenId];
+
+    if (royalty.receiver == address(0)) {
+      royalty = _defaultRoyaltyInfo;
     }
 
-    function __ERC2981_init_unchained() internal onlyInitializing {
-    }
-    struct RoyaltyInfo {
-        address receiver;
-        uint96 royaltyFraction;
-    }
+    uint256 royaltyAmount = (_salePrice * royalty.royaltyFraction) / _feeDenominator();
 
-    RoyaltyInfo private _defaultRoyaltyInfo;
-    mapping(uint256 => RoyaltyInfo) private _tokenRoyaltyInfo;
+    return (royalty.receiver, royaltyAmount);
+  }
 
-    /**
-     * @dev See {IERC165-supportsInterface}.
-     */
-    function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165Upgradeable, ERC165Upgradeable) returns (bool) {
-        return interfaceId == type(IERC2981Upgradeable).interfaceId || super.supportsInterface(interfaceId);
-    }
+  /**
+   * @dev The denominator with which to interpret the fee set in {_setTokenRoyalty} and {_setDefaultRoyalty} as a
+   * fraction of the sale price. Defaults to 10000 so fees are expressed in basis points, but may be customized by an
+   * override.
+   */
+  function _feeDenominator() internal pure virtual returns (uint96) {
+    return 10000;
+  }
 
-    /**
-     * @inheritdoc IERC2981Upgradeable
-     */
-    function royaltyInfo(uint256 _tokenId, uint256 _salePrice) public view virtual override returns (address, uint256) {
-        RoyaltyInfo memory royalty = _tokenRoyaltyInfo[_tokenId];
+  /**
+   * @dev Sets the royalty information that all ids in this contract will default to.
+   *
+   * Requirements:
+   *
+   * - `receiver` cannot be the zero address.
+   * - `feeNumerator` cannot be greater than the fee denominator.
+   */
+  function _setDefaultRoyalty(address receiver, uint96 feeNumerator) internal virtual {
+    require(feeNumerator <= _feeDenominator(), 'ERC2981: royalty fee will exceed salePrice');
+    require(receiver != address(0), 'ERC2981: invalid receiver');
 
-        if (royalty.receiver == address(0)) {
-            royalty = _defaultRoyaltyInfo;
-        }
+    _defaultRoyaltyInfo = RoyaltyInfo(receiver, feeNumerator);
+  }
 
-        uint256 royaltyAmount = (_salePrice * royalty.royaltyFraction) / _feeDenominator();
+  /**
+   * @dev Removes default royalty information.
+   */
+  function _deleteDefaultRoyalty() internal virtual {
+    delete _defaultRoyaltyInfo;
+  }
 
-        return (royalty.receiver, royaltyAmount);
-    }
+  /**
+   * @dev Sets the royalty information for a specific token id, overriding the global default.
+   *
+   * Requirements:
+   *
+   * - `receiver` cannot be the zero address.
+   * - `feeNumerator` cannot be greater than the fee denominator.
+   */
+  function _setTokenRoyalty(
+    uint256 tokenId,
+    address receiver,
+    uint96 feeNumerator
+  ) internal virtual {
+    require(feeNumerator <= _feeDenominator(), 'ERC2981: royalty fee will exceed salePrice');
+    require(receiver != address(0), 'ERC2981: Invalid parameters');
 
-    /**
-     * @dev The denominator with which to interpret the fee set in {_setTokenRoyalty} and {_setDefaultRoyalty} as a
-     * fraction of the sale price. Defaults to 10000 so fees are expressed in basis points, but may be customized by an
-     * override.
-     */
-    function _feeDenominator() internal pure virtual returns (uint96) {
-        return 10000;
-    }
+    _tokenRoyaltyInfo[tokenId] = RoyaltyInfo(receiver, feeNumerator);
+  }
 
-    /**
-     * @dev Sets the royalty information that all ids in this contract will default to.
-     *
-     * Requirements:
-     *
-     * - `receiver` cannot be the zero address.
-     * - `feeNumerator` cannot be greater than the fee denominator.
-     */
-    function _setDefaultRoyalty(address receiver, uint96 feeNumerator) internal virtual {
-        require(feeNumerator <= _feeDenominator(), "ERC2981: royalty fee will exceed salePrice");
-        require(receiver != address(0), "ERC2981: invalid receiver");
+  /**
+   * @dev Resets royalty information for the token id back to the global default.
+   */
+  function _resetTokenRoyalty(uint256 tokenId) internal virtual {
+    delete _tokenRoyaltyInfo[tokenId];
+  }
 
-        _defaultRoyaltyInfo = RoyaltyInfo(receiver, feeNumerator);
-    }
-
-    /**
-     * @dev Removes default royalty information.
-     */
-    function _deleteDefaultRoyalty() internal virtual {
-        delete _defaultRoyaltyInfo;
-    }
-
-    /**
-     * @dev Sets the royalty information for a specific token id, overriding the global default.
-     *
-     * Requirements:
-     *
-     * - `receiver` cannot be the zero address.
-     * - `feeNumerator` cannot be greater than the fee denominator.
-     */
-    function _setTokenRoyalty(
-        uint256 tokenId,
-        address receiver,
-        uint96 feeNumerator
-    ) internal virtual {
-        require(feeNumerator <= _feeDenominator(), "ERC2981: royalty fee will exceed salePrice");
-        require(receiver != address(0), "ERC2981: Invalid parameters");
-
-        _tokenRoyaltyInfo[tokenId] = RoyaltyInfo(receiver, feeNumerator);
-    }
-
-    /**
-     * @dev Resets royalty information for the token id back to the global default.
-     */
-    function _resetTokenRoyalty(uint256 tokenId) internal virtual {
-        delete _tokenRoyaltyInfo[tokenId];
-    }
-
-    /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
-     * variables without shifting down storage in the inheritance chain.
-     * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
-     */
-    uint256[48] private __gap;
+  /**
+   * @dev This empty reserved space is put in place to allow future versions to add new
+   * variables without shifting down storage in the inheritance chain.
+   * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
+   */
+  uint256[48] private __gap;
 }

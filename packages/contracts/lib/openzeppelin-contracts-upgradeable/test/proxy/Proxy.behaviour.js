@@ -1,11 +1,11 @@
-const { expectRevert } = require('@openzeppelin/test-helpers');
-const { getSlot, ImplementationSlot } = require('../helpers/erc1967');
+const {expectRevert} = require('@openzeppelin/test-helpers');
+const {getSlot, ImplementationSlot} = require('../helpers/erc1967');
 
-const { expect } = require('chai');
+const {expect} = require('chai');
 
 const DummyImplementation = artifacts.require('DummyImplementation');
 
-module.exports = function shouldBehaveLikeProxy (createProxy, proxyAdminAddress, proxyCreator) {
+module.exports = function shouldBehaveLikeProxy(createProxy, proxyAdminAddress, proxyCreator) {
   it('cannot be initialized with a non-contract address', async function () {
     const nonContractAddress = proxyCreator;
     const initializeData = Buffer.from('');
@@ -20,7 +20,7 @@ module.exports = function shouldBehaveLikeProxy (createProxy, proxyAdminAddress,
     this.implementation = web3.utils.toChecksumAddress((await DummyImplementation.new()).address);
   });
 
-  const assertProxyInitialization = function ({ value, balance }) {
+  const assertProxyInitialization = function ({value, balance}) {
     it('sets the implementation address', async function () {
       const implementationSlot = await getSlot(this.proxy, ImplementationSlot);
       const implementationAddress = web3.utils.toChecksumAddress(implementationSlot.substr(-40));
@@ -49,7 +49,7 @@ module.exports = function shouldBehaveLikeProxy (createProxy, proxyAdminAddress,
         ).address;
       });
 
-      assertProxyInitialization({ value: 0, balance: 0 });
+      assertProxyInitialization({value: 0, balance: 0});
     });
 
     describe('when sending some balance', function () {
@@ -64,14 +64,16 @@ module.exports = function shouldBehaveLikeProxy (createProxy, proxyAdminAddress,
         ).address;
       });
 
-      assertProxyInitialization({ value: 0, balance: value });
+      assertProxyInitialization({value: 0, balance: value});
     });
   });
 
   describe('initialization without parameters', function () {
     describe('non payable', function () {
       const expectedInitializedValue = 10;
-      const initializeData = new DummyImplementation('').contract.methods['initializeNonPayable()']().encodeABI();
+      const initializeData = new DummyImplementation('').contract.methods[
+        'initializeNonPayable()'
+      ]().encodeABI();
 
       describe('when not sending balance', function () {
         beforeEach('creating proxy', async function () {
@@ -93,7 +95,10 @@ module.exports = function shouldBehaveLikeProxy (createProxy, proxyAdminAddress,
 
         it('reverts', async function () {
           await expectRevert.unspecified(
-            createProxy(this.implementation, proxyAdminAddress, initializeData, { from: proxyCreator, value }),
+            createProxy(this.implementation, proxyAdminAddress, initializeData, {
+              from: proxyCreator,
+              value,
+            }),
           );
         });
       });
@@ -101,7 +106,9 @@ module.exports = function shouldBehaveLikeProxy (createProxy, proxyAdminAddress,
 
     describe('payable', function () {
       const expectedInitializedValue = 100;
-      const initializeData = new DummyImplementation('').contract.methods['initializePayable()']().encodeABI();
+      const initializeData = new DummyImplementation('').contract.methods[
+        'initializePayable()'
+      ]().encodeABI();
 
       describe('when not sending balance', function () {
         beforeEach('creating proxy', async function () {
@@ -141,8 +148,9 @@ module.exports = function shouldBehaveLikeProxy (createProxy, proxyAdminAddress,
   describe('initialization with parameters', function () {
     describe('non payable', function () {
       const expectedInitializedValue = 10;
-      const initializeData = new DummyImplementation('').contract
-        .methods.initializeNonPayableWithValue(expectedInitializedValue).encodeABI();
+      const initializeData = new DummyImplementation('').contract.methods
+        .initializeNonPayableWithValue(expectedInitializedValue)
+        .encodeABI();
 
       describe('when not sending balance', function () {
         beforeEach('creating proxy', async function () {
@@ -164,7 +172,10 @@ module.exports = function shouldBehaveLikeProxy (createProxy, proxyAdminAddress,
 
         it('reverts', async function () {
           await expectRevert.unspecified(
-            createProxy(this.implementation, proxyAdminAddress, initializeData, { from: proxyCreator, value }),
+            createProxy(this.implementation, proxyAdminAddress, initializeData, {
+              from: proxyCreator,
+              value,
+            }),
           );
         });
       });
@@ -172,8 +183,9 @@ module.exports = function shouldBehaveLikeProxy (createProxy, proxyAdminAddress,
 
     describe('payable', function () {
       const expectedInitializedValue = 42;
-      const initializeData = new DummyImplementation('').contract
-        .methods.initializePayableWithValue(expectedInitializedValue).encodeABI();
+      const initializeData = new DummyImplementation('').contract.methods
+        .initializePayableWithValue(expectedInitializedValue)
+        .encodeABI();
 
       describe('when not sending balance', function () {
         beforeEach('creating proxy', async function () {
@@ -210,12 +222,11 @@ module.exports = function shouldBehaveLikeProxy (createProxy, proxyAdminAddress,
     });
 
     describe('reverting initialization', function () {
-      const initializeData = new DummyImplementation('').contract
-        .methods.reverts().encodeABI();
+      const initializeData = new DummyImplementation('').contract.methods.reverts().encodeABI();
 
       it('reverts', async function () {
         await expectRevert(
-          createProxy(this.implementation, proxyAdminAddress, initializeData, { from: proxyCreator }),
+          createProxy(this.implementation, proxyAdminAddress, initializeData, {from: proxyCreator}),
           'DummyImplementation reverted',
         );
       });

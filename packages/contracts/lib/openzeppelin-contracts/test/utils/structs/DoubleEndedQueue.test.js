@@ -1,12 +1,16 @@
-const { expectEvent } = require('@openzeppelin/test-helpers');
-const { expectRevertCustomError } = require('../../helpers/customError');
+const {expectEvent} = require('@openzeppelin/test-helpers');
+const {expectRevertCustomError} = require('../../helpers/customError');
 
 const Bytes32DequeMock = artifacts.require('Bytes32DequeMock');
 
 /** Rebuild the content of the deque as a JS array. */
-async function getContent (deque) {
+async function getContent(deque) {
   const length = await deque.length().then(bn => bn.toNumber());
-  const values = await Promise.all(Array(length).fill().map((_, i) => deque.at(i)));
+  const values = await Promise.all(
+    Array(length)
+      .fill()
+      .map((_, i) => deque.at(i)),
+  );
   return values;
 }
 
@@ -39,7 +43,7 @@ contract('DoubleEndedQueue', function (accounts) {
       await this.deque.pushBack(bytesB);
       await this.deque.pushFront(bytesA);
       await this.deque.pushBack(bytesC);
-      this.content = [ bytesA, bytesB, bytesC ];
+      this.content = [bytesA, bytesB, bytesC];
     });
 
     it('getters', async function () {
@@ -73,14 +77,14 @@ contract('DoubleEndedQueue', function (accounts) {
     describe('pop', function () {
       it('front', async function () {
         const value = this.content.shift(); // remove first element
-        expectEvent(await this.deque.popFront(), 'OperationResult', { value });
+        expectEvent(await this.deque.popFront(), 'OperationResult', {value});
 
         expect(await getContent(this.deque)).to.have.ordered.members(this.content);
       });
 
       it('back', async function () {
         const value = this.content.pop(); // remove last element
-        expectEvent(await this.deque.popBack(), 'OperationResult', { value });
+        expectEvent(await this.deque.popBack(), 'OperationResult', {value});
 
         expect(await getContent(this.deque)).to.have.ordered.members(this.content);
       });

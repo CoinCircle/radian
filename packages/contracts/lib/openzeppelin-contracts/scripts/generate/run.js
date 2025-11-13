@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const format = require('./format-lines');
 
-function getVersion (path) {
+function getVersion(path) {
   try {
     return fs
       .readFileSync(path, 'utf8')
@@ -15,7 +15,7 @@ function getVersion (path) {
   }
 }
 
-for (const [ file, template ] of Object.entries({
+for (const [file, template] of Object.entries({
   // SafeCast
   'utils/math/SafeCast.sol': './templates/SafeCast.js',
   'mocks/SafeCastMock.sol': './templates/SafeCastMock.js',
@@ -35,7 +35,7 @@ for (const [ file, template ] of Object.entries({
   const version = getVersion(output);
   const content = format(
     '// SPDX-License-Identifier: MIT',
-    ...(version ? [ version + ` (${file})` ] : []),
+    ...(version ? [version + ` (${file})`] : []),
     `// This file was procedurally generated from ${input}.`,
     '',
     require(template),

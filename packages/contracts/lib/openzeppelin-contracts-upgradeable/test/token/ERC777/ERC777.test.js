@@ -1,7 +1,13 @@
-const { BN, constants, expectEvent, expectRevert, singletons } = require('@openzeppelin/test-helpers');
-const { ZERO_ADDRESS } = constants;
+const {
+  BN,
+  constants,
+  expectEvent,
+  expectRevert,
+  singletons,
+} = require('@openzeppelin/test-helpers');
+const {ZERO_ADDRESS} = constants;
 
-const { expect } = require('chai');
+const {expect} = require('chai');
 
 const {
   shouldBehaveLikeERC777DirectSendBurn,
@@ -12,16 +18,14 @@ const {
   shouldBehaveLikeERC777SendBurnWithSendHook,
 } = require('./ERC777.behavior');
 
-const {
-  shouldBehaveLikeERC20,
-  shouldBehaveLikeERC20Approve,
-} = require('../ERC20/ERC20.behavior');
+const {shouldBehaveLikeERC20, shouldBehaveLikeERC20Approve} = require('../ERC20/ERC20.behavior');
 
 const ERC777 = artifacts.require('ERC777Mock');
 const ERC777SenderRecipientMock = artifacts.require('ERC777SenderRecipientMock');
 
 contract('ERC777', function (accounts) {
-  const [ registryFunder, holder, defaultOperatorA, defaultOperatorB, newOperator, anyone ] = accounts;
+  const [registryFunder, holder, defaultOperatorA, defaultOperatorB, newOperator, anyone] =
+    accounts;
 
   const initialSupply = new BN('10000');
   const name = 'ERC777Test';
@@ -44,13 +48,20 @@ contract('ERC777', function (accounts) {
       shouldBehaveLikeERC20('ERC777', initialSupply, holder, anyone, defaultOperatorA);
 
       describe('_approve', function () {
-        shouldBehaveLikeERC20Approve('ERC777', holder, anyone, initialSupply, function (owner, spender, amount) {
-          return this.token.approveInternal(owner, spender, amount);
-        });
+        shouldBehaveLikeERC20Approve(
+          'ERC777',
+          holder,
+          anyone,
+          initialSupply,
+          function (owner, spender, amount) {
+            return this.token.approveInternal(owner, spender, amount);
+          },
+        );
 
         describe('when the owner is the zero address', function () {
           it('reverts', async function () {
-            await expectRevert(this.token.approveInternal(ZERO_ADDRESS, anyone, initialSupply),
+            await expectRevert(
+              this.token.approveInternal(ZERO_ADDRESS, anyone, initialSupply),
               'ERC777: approve from the zero address',
             );
           });
@@ -94,13 +105,21 @@ contract('ERC777', function (accounts) {
       });
 
       it('the ERC777Token interface is registered in the registry', async function () {
-        expect(await this.erc1820.getInterfaceImplementer(this.token.address, web3.utils.soliditySha3('ERC777Token')))
-          .to.equal(this.token.address);
+        expect(
+          await this.erc1820.getInterfaceImplementer(
+            this.token.address,
+            web3.utils.soliditySha3('ERC777Token'),
+          ),
+        ).to.equal(this.token.address);
       });
 
       it('the ERC20Token interface is registered in the registry', async function () {
-        expect(await this.erc1820.getInterfaceImplementer(this.token.address, web3.utils.soliditySha3('ERC20Token')))
-          .to.equal(this.token.address);
+        expect(
+          await this.erc1820.getInterfaceImplementer(
+            this.token.address,
+            web3.utils.soliditySha3('ERC20Token'),
+          ),
+        ).to.equal(this.token.address);
       });
     });
 
@@ -127,30 +146,54 @@ contract('ERC777', function (accounts) {
         });
 
         context('with first default operator', function () {
-          shouldBehaveLikeERC777OperatorSendBurn(holder, anyone, defaultOperatorA, data, operatorData);
+          shouldBehaveLikeERC777OperatorSendBurn(
+            holder,
+            anyone,
+            defaultOperatorA,
+            data,
+            operatorData,
+          );
         });
 
         context('with second default operator', function () {
-          shouldBehaveLikeERC777OperatorSendBurn(holder, anyone, defaultOperatorB, data, operatorData);
+          shouldBehaveLikeERC777OperatorSendBurn(
+            holder,
+            anyone,
+            defaultOperatorB,
+            data,
+            operatorData,
+          );
         });
 
         context('before authorizing a new operator', function () {
-          shouldBehaveLikeERC777UnauthorizedOperatorSendBurn(holder, anyone, newOperator, data, operatorData);
+          shouldBehaveLikeERC777UnauthorizedOperatorSendBurn(
+            holder,
+            anyone,
+            newOperator,
+            data,
+            operatorData,
+          );
         });
 
         context('with new authorized operator', function () {
           beforeEach(async function () {
-            await this.token.authorizeOperator(newOperator, { from: holder });
+            await this.token.authorizeOperator(newOperator, {from: holder});
           });
 
           shouldBehaveLikeERC777OperatorSendBurn(holder, anyone, newOperator, data, operatorData);
 
           context('with revoked operator', function () {
             beforeEach(async function () {
-              await this.token.revokeOperator(newOperator, { from: holder });
+              await this.token.revokeOperator(newOperator, {from: holder});
             });
 
-            shouldBehaveLikeERC777UnauthorizedOperatorSendBurn(holder, anyone, newOperator, data, operatorData);
+            shouldBehaveLikeERC777UnauthorizedOperatorSendBurn(
+              holder,
+              anyone,
+              newOperator,
+              data,
+              operatorData,
+            );
           });
         });
       });
@@ -190,7 +233,7 @@ contract('ERC777', function (accounts) {
                 data,
                 operatorData,
                 false,
-                { from: operator },
+                {from: operator},
               );
             });
 
@@ -201,7 +244,7 @@ contract('ERC777', function (accounts) {
                 data,
                 operatorData,
                 true,
-                { from: operator },
+                {from: operator},
               );
             });
           });
@@ -216,7 +259,7 @@ contract('ERC777', function (accounts) {
                 data,
                 operatorData,
                 false,
-                { from: operator },
+                {from: operator},
               );
             });
 
@@ -227,7 +270,7 @@ contract('ERC777', function (accounts) {
                 data,
                 operatorData,
                 true,
-                { from: operator },
+                {from: operator},
               );
             });
           });
@@ -249,20 +292,15 @@ contract('ERC777', function (accounts) {
                 data,
                 operatorData,
                 false,
-                { from: operator },
+                {from: operator},
               );
             });
 
             it('with requireReceptionAck', async function () {
               await expectRevert(
-                this.token.mintInternalExtended(
-                  this.recipient,
-                  amount,
-                  data,
-                  operatorData,
-                  true,
-                  { from: operator },
-                ),
+                this.token.mintInternalExtended(this.recipient, amount, data, operatorData, true, {
+                  from: operator,
+                }),
                 'ERC777: token recipient contract has no implementer for ERC777TokensRecipient',
               );
             });
@@ -278,20 +316,15 @@ contract('ERC777', function (accounts) {
                 data,
                 operatorData,
                 false,
-                { from: operator },
+                {from: operator},
               );
             });
 
             it('with requireReceptionAck', async function () {
               await expectRevert(
-                this.token.mintInternalExtended(
-                  this.recipient,
-                  amount,
-                  data,
-                  operatorData,
-                  true,
-                  { from: operator },
-                ),
+                this.token.mintInternalExtended(this.recipient, amount, data, operatorData, true, {
+                  from: operator,
+                }),
                 'ERC777: token recipient contract has no implementer for ERC777TokensRecipient',
               );
             });
@@ -307,21 +340,23 @@ contract('ERC777', function (accounts) {
 
       it('reverts when self-authorizing', async function () {
         await expectRevert(
-          this.token.authorizeOperator(holder, { from: holder }), 'ERC777: authorizing self as operator',
+          this.token.authorizeOperator(holder, {from: holder}),
+          'ERC777: authorizing self as operator',
         );
       });
 
       it('reverts when self-revoking', async function () {
         await expectRevert(
-          this.token.revokeOperator(holder, { from: holder }), 'ERC777: revoking self as operator',
+          this.token.revokeOperator(holder, {from: holder}),
+          'ERC777: revoking self as operator',
         );
       });
 
       it('non-operators can be revoked', async function () {
         expect(await this.token.isOperatorFor(newOperator, holder)).to.equal(false);
 
-        const receipt = await this.token.revokeOperator(newOperator, { from: holder });
-        expectEvent(receipt, 'RevokedOperator', { operator: newOperator, tokenHolder: holder });
+        const receipt = await this.token.revokeOperator(newOperator, {from: holder});
+        expectEvent(receipt, 'RevokedOperator', {operator: newOperator, tokenHolder: holder});
 
         expect(await this.token.isOperatorFor(newOperator, holder)).to.equal(false);
       });
@@ -329,15 +364,15 @@ contract('ERC777', function (accounts) {
       it('non-operators can be authorized', async function () {
         expect(await this.token.isOperatorFor(newOperator, holder)).to.equal(false);
 
-        const receipt = await this.token.authorizeOperator(newOperator, { from: holder });
-        expectEvent(receipt, 'AuthorizedOperator', { operator: newOperator, tokenHolder: holder });
+        const receipt = await this.token.authorizeOperator(newOperator, {from: holder});
+        expectEvent(receipt, 'AuthorizedOperator', {operator: newOperator, tokenHolder: holder});
 
         expect(await this.token.isOperatorFor(newOperator, holder)).to.equal(true);
       });
 
       describe('new operators', function () {
         beforeEach(async function () {
-          await this.token.authorizeOperator(newOperator, { from: holder });
+          await this.token.authorizeOperator(newOperator, {from: holder});
         });
 
         it('are not added to the default operators list', async function () {
@@ -345,15 +380,15 @@ contract('ERC777', function (accounts) {
         });
 
         it('can be re-authorized', async function () {
-          const receipt = await this.token.authorizeOperator(newOperator, { from: holder });
-          expectEvent(receipt, 'AuthorizedOperator', { operator: newOperator, tokenHolder: holder });
+          const receipt = await this.token.authorizeOperator(newOperator, {from: holder});
+          expectEvent(receipt, 'AuthorizedOperator', {operator: newOperator, tokenHolder: holder});
 
           expect(await this.token.isOperatorFor(newOperator, holder)).to.equal(true);
         });
 
         it('can be revoked', async function () {
-          const receipt = await this.token.revokeOperator(newOperator, { from: holder });
-          expectEvent(receipt, 'RevokedOperator', { operator: newOperator, tokenHolder: holder });
+          const receipt = await this.token.revokeOperator(newOperator, {from: holder});
+          expectEvent(receipt, 'RevokedOperator', {operator: newOperator, tokenHolder: holder});
 
           expect(await this.token.isOperatorFor(newOperator, holder)).to.equal(false);
         });
@@ -361,29 +396,35 @@ contract('ERC777', function (accounts) {
 
       describe('default operators', function () {
         it('can be re-authorized', async function () {
-          const receipt = await this.token.authorizeOperator(defaultOperatorA, { from: holder });
-          expectEvent(receipt, 'AuthorizedOperator', { operator: defaultOperatorA, tokenHolder: holder });
+          const receipt = await this.token.authorizeOperator(defaultOperatorA, {from: holder});
+          expectEvent(receipt, 'AuthorizedOperator', {
+            operator: defaultOperatorA,
+            tokenHolder: holder,
+          });
 
           expect(await this.token.isOperatorFor(defaultOperatorA, holder)).to.equal(true);
         });
 
         it('can be revoked', async function () {
-          const receipt = await this.token.revokeOperator(defaultOperatorA, { from: holder });
-          expectEvent(receipt, 'RevokedOperator', { operator: defaultOperatorA, tokenHolder: holder });
+          const receipt = await this.token.revokeOperator(defaultOperatorA, {from: holder});
+          expectEvent(receipt, 'RevokedOperator', {
+            operator: defaultOperatorA,
+            tokenHolder: holder,
+          });
 
           expect(await this.token.isOperatorFor(defaultOperatorA, holder)).to.equal(false);
         });
 
         it('cannot be revoked for themselves', async function () {
           await expectRevert(
-            this.token.revokeOperator(defaultOperatorA, { from: defaultOperatorA }),
+            this.token.revokeOperator(defaultOperatorA, {from: defaultOperatorA}),
             'ERC777: revoking self as operator',
           );
         });
 
         context('with revoked default operator', function () {
           beforeEach(async function () {
-            await this.token.revokeOperator(defaultOperatorA, { from: holder });
+            await this.token.revokeOperator(defaultOperatorA, {from: holder});
           });
 
           it('default operator is not revoked for other holders', async function () {
@@ -399,8 +440,11 @@ contract('ERC777', function (accounts) {
           });
 
           it('revoked default operator can be re-authorized', async function () {
-            const receipt = await this.token.authorizeOperator(defaultOperatorA, { from: holder });
-            expectEvent(receipt, 'AuthorizedOperator', { operator: defaultOperatorA, tokenHolder: holder });
+            const receipt = await this.token.authorizeOperator(defaultOperatorA, {from: holder});
+            expectEvent(receipt, 'AuthorizedOperator', {
+              operator: defaultOperatorA,
+              tokenHolder: holder,
+            });
 
             expect(await this.token.isOperatorFor(defaultOperatorA, holder)).to.equal(true);
           });
@@ -429,33 +473,37 @@ contract('ERC777', function (accounts) {
 
             it('send reverts', async function () {
               await expectRevert(
-                this.token.send(this.recipient, amount, data, { from: holder }),
+                this.token.send(this.recipient, amount, data, {from: holder}),
                 'ERC777: token recipient contract has no implementer for ERC777TokensRecipient',
               );
             });
 
             it('operatorSend reverts', async function () {
               await expectRevert(
-                this.token.operatorSend(this.sender, this.recipient, amount, data, operatorData, { from: operator }),
+                this.token.operatorSend(this.sender, this.recipient, amount, data, operatorData, {
+                  from: operator,
+                }),
                 'ERC777: token recipient contract has no implementer for ERC777TokensRecipient',
               );
             });
 
             it('mint (internal) reverts', async function () {
               await expectRevert(
-                this.token.mintInternal(this.recipient, amount, data, operatorData, { from: operator }),
+                this.token.mintInternal(this.recipient, amount, data, operatorData, {
+                  from: operator,
+                }),
                 'ERC777: token recipient contract has no implementer for ERC777TokensRecipient',
               );
             });
 
             it('(ERC20) transfer succeeds', async function () {
-              await this.token.transfer(this.recipient, amount, { from: holder });
+              await this.token.transfer(this.recipient, amount, {from: holder});
             });
 
             it('(ERC20) transferFrom succeeds', async function () {
               const approved = anyone;
-              await this.token.approve(approved, amount, { from: this.sender });
-              await this.token.transferFrom(this.sender, this.recipient, amount, { from: approved });
+              await this.token.approve(approved, amount, {from: this.sender});
+              await this.token.transferFrom(this.sender, this.recipient, amount, {from: approved});
             });
           });
         });
@@ -470,12 +518,18 @@ contract('ERC777', function (accounts) {
 
               await this.erc1820.setInterfaceImplementer(
                 this.recipient,
-                web3.utils.soliditySha3('ERC777TokensRecipient'), this.tokensRecipientImplementer.address,
-                { from: this.recipient },
+                web3.utils.soliditySha3('ERC777TokensRecipient'),
+                this.tokensRecipientImplementer.address,
+                {from: this.recipient},
               );
             });
 
-            shouldBehaveLikeERC777SendBurnMintInternalWithReceiveHook(operator, amount, data, operatorData);
+            shouldBehaveLikeERC777SendBurnMintInternalWithReceiveHook(
+              operator,
+              amount,
+              data,
+              operatorData,
+            );
           });
 
           context('with contract as implementer for another contract', function () {
@@ -485,10 +539,17 @@ contract('ERC777', function (accounts) {
 
               this.tokensRecipientImplementer = await ERC777SenderRecipientMock.new();
               await this.tokensRecipientImplementer.recipientFor(this.recipient);
-              await this.recipientContract.registerRecipient(this.tokensRecipientImplementer.address);
+              await this.recipientContract.registerRecipient(
+                this.tokensRecipientImplementer.address,
+              );
             });
 
-            shouldBehaveLikeERC777SendBurnMintInternalWithReceiveHook(operator, amount, data, operatorData);
+            shouldBehaveLikeERC777SendBurnMintInternalWithReceiveHook(
+              operator,
+              amount,
+              data,
+              operatorData,
+            );
           });
 
           context('with contract as implementer for itself', function () {
@@ -499,7 +560,12 @@ contract('ERC777', function (accounts) {
               await this.tokensRecipientImplementer.recipientFor(this.recipient);
             });
 
-            shouldBehaveLikeERC777SendBurnMintInternalWithReceiveHook(operator, amount, data, operatorData);
+            shouldBehaveLikeERC777SendBurnMintInternalWithReceiveHook(
+              operator,
+              amount,
+              data,
+              operatorData,
+            );
           });
         });
       });
@@ -518,8 +584,9 @@ contract('ERC777', function (accounts) {
 
             await this.erc1820.setInterfaceImplementer(
               this.sender,
-              web3.utils.soliditySha3('ERC777TokensSender'), this.tokensSenderImplementer.address,
-              { from: this.sender },
+              web3.utils.soliditySha3('ERC777TokensSender'),
+              this.tokensSenderImplementer.address,
+              {from: this.sender},
             );
           });
 
@@ -539,7 +606,7 @@ contract('ERC777', function (accounts) {
             // recipient interface.
 
             await this.senderContract.recipientFor(this.sender);
-            await this.token.send(this.sender, amount, data, { from: holder });
+            await this.token.send(this.sender, amount, data, {from: holder});
           });
 
           shouldBehaveLikeERC777SendBurnWithSendHook(operator, amount, data, operatorData);
@@ -556,7 +623,7 @@ contract('ERC777', function (accounts) {
             // recipient interface.
 
             await this.tokensSenderImplementer.recipientFor(this.sender);
-            await this.token.send(this.sender, amount, data, { from: holder });
+            await this.token.send(this.sender, amount, data, {from: holder});
           });
 
           shouldBehaveLikeERC777SendBurnWithSendHook(operator, amount, data, operatorData);
@@ -582,11 +649,11 @@ contract('ERC777', function (accounts) {
       await this.sender.registerRecipient(this.sender.address);
       await this.sender.registerSender(this.sender.address);
       this.token = await ERC777.new(holder, initialSupply, name, symbol, []);
-      await this.token.send(this.sender.address, 1, '0x', { from: holder });
+      await this.token.send(this.sender.address, 1, '0x', {from: holder});
     });
 
     it('send', async function () {
-      const { receipt } = await this.sender.send(this.token.address, anyone, 1, '0x');
+      const {receipt} = await this.sender.send(this.token.address, anyone, 1, '0x');
 
       const internalBeforeHook = receipt.logs.findIndex(l => l.event === 'BeforeTokenTransfer');
       expect(internalBeforeHook).to.be.gte(0);
@@ -597,7 +664,7 @@ contract('ERC777', function (accounts) {
     });
 
     it('burn', async function () {
-      const { receipt } = await this.sender.burn(this.token.address, 1, '0x');
+      const {receipt} = await this.sender.burn(this.token.address, 1, '0x');
 
       const internalBeforeHook = receipt.logs.findIndex(l => l.event === 'BeforeTokenTransfer');
       expect(internalBeforeHook).to.be.gte(0);

@@ -1,12 +1,12 @@
-const { BN, time } = require('@openzeppelin/test-helpers');
-const { expect } = require('chai');
+const {BN, time} = require('@openzeppelin/test-helpers');
+const {expect} = require('chai');
 
 const TimersBlockNumberImpl = artifacts.require('TimersBlockNumberImpl');
 
 contract('TimersBlockNumber', function (accounts) {
   beforeEach(async function () {
     this.instance = await TimersBlockNumberImpl.new();
-    this.now = await web3.eth.getBlock('latest').then(({ number }) => number);
+    this.now = await web3.eth.getBlock('latest').then(({number}) => number);
   });
 
   it('unset', async function () {

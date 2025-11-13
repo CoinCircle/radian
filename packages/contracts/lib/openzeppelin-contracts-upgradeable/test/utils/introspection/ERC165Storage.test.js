@@ -1,6 +1,6 @@
-const { expectRevert } = require('@openzeppelin/test-helpers');
+const {expectRevert} = require('@openzeppelin/test-helpers');
 
-const { shouldSupportInterfaces } = require('./SupportsInterface.behavior');
+const {shouldSupportInterfaces} = require('./SupportsInterface.behavior');
 
 const ERC165Mock = artifacts.require('ERC165StorageMock');
 
@@ -19,7 +19,5 @@ contract('ERC165Storage', function (accounts) {
     await expectRevert(this.mock.registerInterface('0xffffffff'), 'ERC165: invalid interface id');
   });
 
-  shouldSupportInterfaces([
-    'ERC165',
-  ]);
+  shouldSupportInterfaces(['ERC165']);
 });

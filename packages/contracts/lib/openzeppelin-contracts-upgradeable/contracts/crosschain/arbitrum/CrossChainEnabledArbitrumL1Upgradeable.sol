@@ -3,9 +3,9 @@
 
 pragma solidity ^0.8.4;
 
-import "../CrossChainEnabledUpgradeable.sol";
-import "./LibArbitrumL1Upgradeable.sol";
-import "../../proxy/utils/Initializable.sol";
+import '../CrossChainEnabledUpgradeable.sol';
+import './LibArbitrumL1Upgradeable.sol';
+import '../../proxy/utils/Initializable.sol';
 
 /**
  * @dev https://arbitrum.io/[Arbitrum] specialization or the
@@ -20,33 +20,36 @@ import "../../proxy/utils/Initializable.sol";
  *
  * _Available since v4.6._
  */
-abstract contract CrossChainEnabledArbitrumL1Upgradeable is Initializable, CrossChainEnabledUpgradeable {
-    /// @custom:oz-upgrades-unsafe-allow state-variable-immutable
-    address private immutable _bridge;
+abstract contract CrossChainEnabledArbitrumL1Upgradeable is
+  Initializable,
+  CrossChainEnabledUpgradeable
+{
+  /// @custom:oz-upgrades-unsafe-allow state-variable-immutable
+  address private immutable _bridge;
 
-    /// @custom:oz-upgrades-unsafe-allow constructor
-    constructor(address bridge) {
-        _bridge = bridge;
-    }
+  /// @custom:oz-upgrades-unsafe-allow constructor
+  constructor(address bridge) {
+    _bridge = bridge;
+  }
 
-    /**
-     * @dev see {CrossChainEnabled-_isCrossChain}
-     */
-    function _isCrossChain() internal view virtual override returns (bool) {
-        return LibArbitrumL1Upgradeable.isCrossChain(_bridge);
-    }
+  /**
+   * @dev see {CrossChainEnabled-_isCrossChain}
+   */
+  function _isCrossChain() internal view virtual override returns (bool) {
+    return LibArbitrumL1Upgradeable.isCrossChain(_bridge);
+  }
 
-    /**
-     * @dev see {CrossChainEnabled-_crossChainSender}
-     */
-    function _crossChainSender() internal view virtual override onlyCrossChain returns (address) {
-        return LibArbitrumL1Upgradeable.crossChainSender(_bridge);
-    }
+  /**
+   * @dev see {CrossChainEnabled-_crossChainSender}
+   */
+  function _crossChainSender() internal view virtual override onlyCrossChain returns (address) {
+    return LibArbitrumL1Upgradeable.crossChainSender(_bridge);
+  }
 
-    /**
-     * @dev This empty reserved space is put in place to allow future versions to add new
-     * variables without shifting down storage in the inheritance chain.
-     * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
-     */
-    uint256[50] private __gap;
+  /**
+   * @dev This empty reserved space is put in place to allow future versions to add new
+   * variables without shifting down storage in the inheritance chain.
+   * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
+   */
+  uint256[50] private __gap;
 }

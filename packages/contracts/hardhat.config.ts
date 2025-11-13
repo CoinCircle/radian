@@ -22,7 +22,6 @@ import { NetworkUserConfig } from 'hardhat/types';
 import { resolve } from 'path';
 import * as toml from 'toml';
 
-
 dotenv.config({ path: resolve(__dirname, `./.env`) });
 
 // Enable increased console log verbosity
@@ -89,7 +88,7 @@ function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
     case `zksync-goerli`:
       jsonRpcUrl = `https://testnet.era.zksync.dev`;
       ethNetwork = `goerli`;
-      verifyURL = 'https://zksync2-testnet-explorer.zksync.dev/contract_verification'
+      verifyURL = `https://zksync2-testnet-explorer.zksync.dev/contract_verification`;
       break;
     case `zksync-local`:
       jsonRpcUrl = `http://localhost:3050`;
@@ -116,7 +115,7 @@ function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
     url: jsonRpcUrl,
     zksync: ZK_EVM,
     ethNetwork,
-    verifyURL
+    verifyURL,
   };
 }
 
@@ -178,19 +177,20 @@ try {
 // Prune Forge style tests from hardhat paths
 subtask(TASK_COMPILE_SOLIDITY_GET_SOURCE_PATHS).setAction(async (_, __, runSuper) => {
   const paths = await runSuper();
-  return paths.filter((p: string) =>
-    !p.includes(`/test/`)
-    && !p.includes(`/stablecoin/`)
-    && !p.endsWith(`.t.sol`)
-    && !p.endsWith(`.s.sol`)
+  return paths.filter(
+    (p: string) =>
+      !p.includes(`/test/`) &&
+      !p.includes(`/stablecoin/`) &&
+      !p.endsWith(`.t.sol`) &&
+      !p.endsWith(`.s.sol`),
   );
 });
 
-function getRemappings() {
-  return readFileSync('remappings.txt', 'utf8')
-    .split('\n')
+function getRemappings(): string[][] {
+  return readFileSync(`remappings.txt`, `utf8`)
+    .split(`\n`)
     .filter(Boolean)
-    .map((line) => line.trim().split('='));
+    .map(line => line.trim().split(`=`));
 }
 
 // For full option list see: https://hardhat.org/config/
@@ -202,10 +202,14 @@ const config: HardhatUserConfig = {
     tests: `./integration`,
   },
   preprocess: {
-    eachLine: (_hre: any) => ({
-      transform: (line: string) => {
+    eachLine: (_hre: unknown) => ({
+      transform: (line: string): string => {
         if (line.match(/^\s*import/)) {
           getRemappings().forEach(([find, replace]) => {
+            // Skip node_modules remappings - let Hardhat resolve them natively
+            if (replace.includes(`node_modules`)) {
+              return;
+            }
             if (line.match(find)) {
               line = line.replace(find, replace);
             }
@@ -214,7 +218,7 @@ const config: HardhatUserConfig = {
         return line;
       },
     }),
-  },  
+  },
   defaultNetwork: `hardhat`,
   solidity: {
     version: foundry.default?.solc || SOLC_DEFAULT,

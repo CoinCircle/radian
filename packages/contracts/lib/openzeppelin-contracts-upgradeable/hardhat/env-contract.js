@@ -1,5 +1,5 @@
 extendEnvironment(env => {
-  const { contract } = env;
+  const {contract} = env;
 
   env.contract = function (name, body) {
     // remove the default account from the accounts list used in tests, in order

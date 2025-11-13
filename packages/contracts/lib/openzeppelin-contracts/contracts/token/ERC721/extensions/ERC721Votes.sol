@@ -3,8 +3,8 @@
 
 pragma solidity ^0.8.0;
 
-import "../ERC721.sol";
-import "../../../governance/utils/Votes.sol";
+import '../ERC721.sol';
+import '../../../governance/utils/Votes.sol';
 
 /**
  * @dev Extension of ERC721 to support voting and delegation as implemented by {Votes}, where each individual NFT counts
@@ -17,25 +17,25 @@ import "../../../governance/utils/Votes.sol";
  * _Available since v4.5._
  */
 abstract contract ERC721Votes is ERC721, Votes {
-    /**
-     * @dev See {ERC721-_afterTokenTransfer}. Adjusts votes when tokens are transferred.
-     *
-     * Emits a {IVotes-DelegateVotesChanged} event.
-     */
-    function _afterTokenTransfer(
-        address from,
-        address to,
-        uint256 firstTokenId,
-        uint256 batchSize
-    ) internal virtual override {
-        _transferVotingUnits(from, to, batchSize);
-        super._afterTokenTransfer(from, to, firstTokenId, batchSize);
-    }
+  /**
+   * @dev See {ERC721-_afterTokenTransfer}. Adjusts votes when tokens are transferred.
+   *
+   * Emits a {IVotes-DelegateVotesChanged} event.
+   */
+  function _afterTokenTransfer(
+    address from,
+    address to,
+    uint256 firstTokenId,
+    uint256 batchSize
+  ) internal virtual override {
+    _transferVotingUnits(from, to, batchSize);
+    super._afterTokenTransfer(from, to, firstTokenId, batchSize);
+  }
 
-    /**
-     * @dev Returns the balance of `account`.
-     */
-    function _getVotingUnits(address account) internal view virtual override returns (uint256) {
-        return balanceOf(account);
-    }
+  /**
+   * @dev Returns the balance of `account`.
+   */
+  function _getVotingUnits(address account) internal view virtual override returns (uint256) {
+    return balanceOf(account);
+  }
 }

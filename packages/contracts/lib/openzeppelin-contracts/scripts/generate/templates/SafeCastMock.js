@@ -1,5 +1,5 @@
 const format = require('../format-lines');
-const { range } = require('../../helpers');
+const {range} = require('../../helpers');
 
 const LENGTHS = range(8, 256, 8).reverse(); // 248 → 8 (in steps of 8)
 
@@ -45,6 +45,8 @@ module.exports = format(
     ...LENGTHS.map(toUintDownCast),
     toInt(256),
     ...LENGTHS.map(toIntDownCast),
-  ].flatMap(fn => fn.split('\n')).slice(0, -1),
+  ]
+    .flatMap(fn => fn.split('\n'))
+    .slice(0, -1),
   '}',
 );

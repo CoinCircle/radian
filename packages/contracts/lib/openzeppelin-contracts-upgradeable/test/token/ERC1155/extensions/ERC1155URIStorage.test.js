@@ -1,12 +1,12 @@
-const { BN, expectEvent } = require('@openzeppelin/test-helpers');
+const {BN, expectEvent} = require('@openzeppelin/test-helpers');
 
-const { expect } = require('chai');
-const { artifacts } = require('hardhat');
+const {expect} = require('chai');
+const {artifacts} = require('hardhat');
 
 const ERC1155URIStorageMock = artifacts.require('ERC1155URIStorageMock');
 
 contract(['ERC1155URIStorage'], function (accounts) {
-  const [ holder ] = accounts;
+  const [holder] = accounts;
 
   const erc1155Uri = 'https://token.com/nfts/';
   const baseUri = 'https://token.com/';
@@ -36,7 +36,7 @@ contract(['ERC1155URIStorage'], function (accounts) {
 
       const expectedUri = `${baseUri}${tokenUri}`;
       expect(receivedTokenUri).to.be.equal(expectedUri);
-      expectEvent(receipt, 'URI', { value: expectedUri, id: tokenId });
+      expectEvent(receipt, 'URI', {value: expectedUri, id: tokenId});
     });
   });
 
@@ -60,7 +60,7 @@ contract(['ERC1155URIStorage'], function (accounts) {
       const receivedTokenUri = await this.token.uri(tokenId);
 
       expect(receivedTokenUri).to.be.equal(tokenUri);
-      expectEvent(receipt, 'URI', { value: tokenUri, id: tokenId });
+      expectEvent(receipt, 'URI', {value: tokenUri, id: tokenId});
     });
   });
 });

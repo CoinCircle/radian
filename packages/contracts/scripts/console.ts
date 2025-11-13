@@ -23,26 +23,29 @@ async function main(wallet?: Wallet, gasOpts?: GasOptions): Promise<void> {
   switch (askForUsage()) {
     case Usage.DEPLOY: {
       const addrsDeployed = {
-        weth: existingContractAddress('WETH9'),
-        exchangePoolFactory: existingContractAddress('ExchangePoolFactory'),
-        swapRouter: existingContractAddress('SwapRouter'),
-        walletFactory: existingContractAddress('WalletFactory'),
-        radianPaymaster: existingContractAddress('RadianPaymaster'),
-        radianX: existingContractAddress('RadianX'),
-        uniswapNFTDescriptor: existingContractAddress('NFTDescriptor'),
-        uniswapNFTManager: existingContractAddress('NonfungiblePositionManager'),
-      }
+        weth: existingContractAddress(`WETH9`),
+        exchangePoolFactory: existingContractAddress(`ExchangePoolFactory`),
+        swapRouter: existingContractAddress(`SwapRouter`),
+        walletFactory: existingContractAddress(`WalletFactory`),
+        radianPaymaster: existingContractAddress(`RadianPaymaster`),
+        radianX: existingContractAddress(`RadianX`),
+        uniswapNFTDescriptor: existingContractAddress(`NFTDescriptor`),
+        uniswapNFTManager: existingContractAddress(`NonfungiblePositionManager`),
+      };
       if (!addrsDeployed.weth) {
         const weth = await trackDeployment(() => deploy.deployWETH(wallet!, gasOpts), `WETH9`);
         addrsDeployed.weth = weth.address;
       }
       if (!addrsDeployed.radianX) {
-        const radianx = await trackDeployment(() => deploy.deployRadianX(wallet!, gasOpts), `RadianX`);
+        const radianx = await trackDeployment(
+          () => deploy.deployRadianX(wallet!, gasOpts),
+          `RadianX`,
+        );
         addrsDeployed.radianX = radianx.address;
       }
       if (!addrsDeployed.uniswapNFTDescriptor) {
         const uniswapNFTDescriptor = await trackDeployment(
-          () => deploy.deployUniswapNFTDescriptor(wallet!, addrsDeployed.weth!, gasOpts),
+          () => deploy.deployUniswapNFTDescriptor(wallet!, addrsDeployed.weth, gasOpts),
           `NFTDescriptor`,
         );
         addrsDeployed.uniswapNFTDescriptor = uniswapNFTDescriptor.address;
@@ -56,13 +59,22 @@ async function main(wallet?: Wallet, gasOpts?: GasOptions): Promise<void> {
       }
       if (!addrsDeployed.swapRouter) {
         const swapRouter = await trackDeployment(
-          () => deploy.deployUniswapRouter(wallet!, addrsDeployed.exchangePoolFactory!, addrsDeployed.weth, gasOpts),
+          () =>
+            deploy.deployUniswapRouter(
+              wallet!,
+              addrsDeployed.exchangePoolFactory,
+              addrsDeployed.weth,
+              gasOpts,
+            ),
           `SwapRouter`,
         );
         addrsDeployed.swapRouter = swapRouter.address;
       }
       if (!addrsDeployed.walletFactory) {
-        const wf = await trackDeployment(() => deploy.deployWalletFactory(wallet!, gasOpts), `WalletFactory`);
+        const wf = await trackDeployment(
+          () => deploy.deployWalletFactory(wallet!, gasOpts),
+          `WalletFactory`,
+        );
         addrsDeployed.walletFactory = wf.address;
       }
       if (!addrsDeployed.radianPaymaster) {
@@ -70,8 +82,8 @@ async function main(wallet?: Wallet, gasOpts?: GasOptions): Promise<void> {
           () =>
             deploy.deployRadianPaymaster(
               wallet!,
-              addrsDeployed.exchangePoolFactory!,
-              addrsDeployed.swapRouter!,
+              addrsDeployed.exchangePoolFactory,
+              addrsDeployed.swapRouter,
               addrsDeployed.weth,
               gasOpts,
             ),
@@ -84,15 +96,15 @@ async function main(wallet?: Wallet, gasOpts?: GasOptions): Promise<void> {
           () =>
             deploy.deployUniswapNFTPositionManager(
               wallet!,
-              addrsDeployed.exchangePoolFactory!,
-              addrsDeployed.weth!,
-              addrsDeployed.uniswapNFTDescriptor!,
+              addrsDeployed.exchangePoolFactory,
+              addrsDeployed.weth,
+              addrsDeployed.uniswapNFTDescriptor,
               gasOpts,
             ),
           `NonfungiblePositionManager`,
         );
         addrsDeployed.uniswapNFTManager = uniswapNFTManager.address;
-            }
+      }
       // await trackDeployment(
       //   () =>
       //     deploy.deployRadianPaymaster(
@@ -152,11 +164,11 @@ async function main(wallet?: Wallet, gasOpts?: GasOptions): Promise<void> {
       let tx: ContractTransaction | undefined = undefined;
       let count: BigNumber;
       switch (askFor(`function call`)) {
-        case 'send': {
+        case `send`: {
           const to = askForAddress(`of the recipient`);
           const tx = await wallet.sendTransaction({
             to,
-            value: BigNumber.from('100000000000000000'),
+            value: BigNumber.from(`100000000000000000`),
           });
           break;
         }
@@ -233,8 +245,8 @@ async function main(wallet?: Wallet, gasOpts?: GasOptions): Promise<void> {
           break;
         }
         default:
-          // count = await counter.getCount();
-          // console.log(`current count: ${count}`);
+        // count = await counter.getCount();
+        // console.log(`current count: ${count}`);
       }
       if (tx != undefined) {
         await tx.wait();
@@ -261,13 +273,17 @@ async function askForWallet(): Promise<Wallet | zksync.Wallet> {
 using zksync
 +++++
     `);
-    const wallet = network.name === 'zksync-local'
-     ? new zksync.Wallet('0x7726827caac94a7f9e1b160f7ea819f172f7b6f9d2a97f992c38edeab82d4110')
-     : zksync.Wallet.fromMnemonic(
-      accounts.mnemonic,
-      accounts.path + `/${accountNumber - 1}`,
+    const wallet =
+      network.name === `zksync-local`
+        ? new zksync.Wallet(`0x7726827caac94a7f9e1b160f7ea819f172f7b6f9d2a97f992c38edeab82d4110`)
+        : zksync.Wallet.fromMnemonic(accounts.mnemonic, accounts.path + `/${accountNumber - 1}`);
+    return wallet.connect(
+      new zksync.Provider(
+        network.name === `zksync-local`
+          ? `http://localhost:3050`
+          : `https://testnet.era.zksync.dev`,
+      ),
     );
-    return wallet.connect(new zksync.Provider(network.name === 'zksync-local' ? 'http://localhost:3050' : 'https://testnet.era.zksync.dev'));
   }
   const wallet = ethers.Wallet.fromMnemonic(
     accounts.mnemonic,
@@ -350,9 +366,11 @@ function askForContract(contractName: string): string {
 }
 
 function existingContractAddress(contractName: string): string {
-  return deployments.deployments
-    .find((d: { network: string }) => d.network === network.name)
-    ?.contracts.find((c: { name: string }) => c.name == contractName)?.address || '';
+  return (
+    deployments.deployments
+      .find((d: { network: string }) => d.network === network.name)
+      ?.contracts.find((c: { name: string }) => c.name == contractName)?.address || ``
+  );
 }
 
 // --- Deployment helpers ---

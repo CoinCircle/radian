@@ -1,5 +1,5 @@
-const { expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
-const { expect } = require('chai');
+const {expectRevert, expectEvent} = require('@openzeppelin/test-helpers');
+const {expect} = require('chai');
 
 const UpgradeableBeacon = artifacts.require('UpgradeableBeacon');
 const Implementation1 = artifacts.require('Implementation1');
@@ -18,7 +18,7 @@ contract('UpgradeableBeacon', function (accounts) {
   context('once deployed', async function () {
     beforeEach('deploying beacon', async function () {
       this.v1 = await Implementation1.new();
-      this.beacon = await UpgradeableBeacon.new(this.v1.address, { from: owner });
+      this.beacon = await UpgradeableBeacon.new(this.v1.address, {from: owner});
     });
 
     it('returns implementation', async function () {
@@ -27,14 +27,14 @@ contract('UpgradeableBeacon', function (accounts) {
 
     it('can be upgraded by the owner', async function () {
       const v2 = await Implementation2.new();
-      const receipt = await this.beacon.upgradeTo(v2.address, { from: owner });
-      expectEvent(receipt, 'Upgraded', { implementation: v2.address });
+      const receipt = await this.beacon.upgradeTo(v2.address, {from: owner});
+      expectEvent(receipt, 'Upgraded', {implementation: v2.address});
       expect(await this.beacon.implementation()).to.equal(v2.address);
     });
 
     it('cannot be upgraded to a non-contract', async function () {
       await expectRevert(
-        this.beacon.upgradeTo(other, { from: owner }),
+        this.beacon.upgradeTo(other, {from: owner}),
         'UpgradeableBeacon: implementation is not a contract',
       );
     });
@@ -42,7 +42,7 @@ contract('UpgradeableBeacon', function (accounts) {
     it('cannot be upgraded by other account', async function () {
       const v2 = await Implementation2.new();
       await expectRevert(
-        this.beacon.upgradeTo(v2.address, { from: other }),
+        this.beacon.upgradeTo(v2.address, {from: other}),
         'Ownable: caller is not the owner',
       );
     });

@@ -3,4 +3,4 @@
 
 pragma solidity ^0.8.0;
 
-import "../token/ERC1155/IERC1155ReceiverUpgradeable.sol";
+import '../token/ERC1155/IERC1155ReceiverUpgradeable.sol';

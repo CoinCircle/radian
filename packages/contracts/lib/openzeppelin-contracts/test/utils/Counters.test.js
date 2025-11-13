@@ -1,6 +1,6 @@
-const { expectRevert } = require('@openzeppelin/test-helpers');
+const {expectRevert} = require('@openzeppelin/test-helpers');
 
-const { expect } = require('chai');
+const {expect} = require('chai');
 
 const CountersImpl = artifacts.require('CountersImpl');
 

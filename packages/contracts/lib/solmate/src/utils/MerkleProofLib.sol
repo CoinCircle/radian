@@ -5,23 +5,23 @@ pragma solidity >=0.8.0;
 /// @author Solmate (https://github.com/transmissions11/solmate/blob/main/src/utils/MerkleProofLib.sol)
 /// @author Modified from Solady (https://github.com/Vectorized/solady/blob/main/src/utils/MerkleProofLib.sol)
 library MerkleProofLib {
-    function verify(
-        bytes32[] calldata proof,
-        bytes32 root,
-        bytes32 leaf
-    ) internal pure returns (bool isValid) {
-        /// @solidity memory-safe-assembly
-        assembly {
-            if proof.length {
-                // Left shifting by 5 is like multiplying by 32.
-                let end := add(proof.offset, shl(5, proof.length))
+  function verify(
+    bytes32[] calldata proof,
+    bytes32 root,
+    bytes32 leaf
+  ) internal pure returns (bool isValid) {
+    /// @solidity memory-safe-assembly
+    assembly {
+      if proof.length {
+        // Left shifting by 5 is like multiplying by 32.
+        let end := add(proof.offset, shl(5, proof.length))
 
-                // Initialize offset to the offset of the proof in calldata.
-                let offset := proof.offset
+        // Initialize offset to the offset of the proof in calldata.
+        let offset := proof.offset
 
-                // Iterate over proof elements to compute root hash.
-                // prettier-ignore
-                for {} 1 {} {
+        // Iterate over proof elements to compute root hash.
+        // prettier-ignore
+        for {} 1 {} {
                     // Slot where the leaf should be put in scratch space. If
                     // leaf > calldataload(offset): slot 32, otherwise: slot 0.
                     let leafSlot := shl(5, gt(leaf, calldataload(offset)))
@@ -40,9 +40,9 @@ library MerkleProofLib {
                     // prettier-ignore
                     if iszero(lt(offset, end)) { break }
                 }
-            }
+      }
 
-            isValid := eq(leaf, root) // The proof is valid if the roots match.
-        }
+      isValid := eq(leaf, root) // The proof is valid if the roots match.
     }
+  }
 }

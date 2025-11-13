@@ -1,8 +1,8 @@
-import 'hardhat-typechain'
-import '@nomiclabs/hardhat-ethers'
-import '@nomiclabs/hardhat-waffle'
-import '@nomiclabs/hardhat-etherscan'
-import 'hardhat-watcher'
+import 'hardhat-typechain';
+import '@nomiclabs/hardhat-ethers';
+import '@nomiclabs/hardhat-waffle';
+import '@nomiclabs/hardhat-etherscan';
+import 'hardhat-watcher';
 
 const LOW_OPTIMIZER_COMPILER_SETTINGS = {
   version: '0.7.6',
@@ -15,7 +15,7 @@ const LOW_OPTIMIZER_COMPILER_SETTINGS = {
       bytecodeHash: 'none',
     },
   },
-}
+};
 
 const LOWEST_OPTIMIZER_COMPILER_SETTINGS = {
   version: '0.7.6',
@@ -28,7 +28,7 @@ const LOWEST_OPTIMIZER_COMPILER_SETTINGS = {
       bytecodeHash: 'none',
     },
   },
-}
+};
 
 const DEFAULT_COMPILER_SETTINGS = {
   version: '0.7.6',
@@ -41,7 +41,7 @@ const DEFAULT_COMPILER_SETTINGS = {
       bytecodeHash: 'none',
     },
   },
-}
+};
 
 export default {
   networks: {
@@ -90,4 +90,4 @@ export default {
       verbose: true,
     },
   },
-}
+};

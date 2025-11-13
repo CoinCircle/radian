@@ -1,13 +1,15 @@
-const { BN, constants, expectEvent, expectRevert } = require('@openzeppelin/test-helpers');
-const { ZERO_ADDRESS } = constants;
-const { shouldSupportInterfaces } = require('../../../utils/introspection/SupportsInterface.behavior');
+const {BN, constants, expectEvent, expectRevert} = require('@openzeppelin/test-helpers');
+const {ZERO_ADDRESS} = constants;
+const {
+  shouldSupportInterfaces,
+} = require('../../../utils/introspection/SupportsInterface.behavior');
 
-const { expect } = require('chai');
+const {expect} = require('chai');
 
 const ERC1155PresetMinterPauser = artifacts.require('ERC1155PresetMinterPauser');
 
 contract('ERC1155PresetMinterPauser', function (accounts) {
-  const [ deployer, other ] = accounts;
+  const [deployer, other] = accounts;
 
   const firstTokenId = new BN('845');
   const firstTokenIdAmount = new BN('5000');
@@ -22,7 +24,7 @@ contract('ERC1155PresetMinterPauser', function (accounts) {
   const uri = 'https://token.com';
 
   beforeEach(async function () {
-    this.token = await ERC1155PresetMinterPauser.new(uri, { from: deployer });
+    this.token = await ERC1155PresetMinterPauser.new(uri, {from: deployer});
   });
 
   shouldSupportInterfaces(['ERC1155', 'AccessControl', 'AccessControlEnumerable']);
@@ -49,17 +51,25 @@ contract('ERC1155PresetMinterPauser', function (accounts) {
 
   describe('minting', function () {
     it('deployer can mint tokens', async function () {
-      const receipt = await this.token.mint(other, firstTokenId, firstTokenIdAmount, '0x', { from: deployer });
-      expectEvent(receipt, 'TransferSingle',
-        { operator: deployer, from: ZERO_ADDRESS, to: other, value: firstTokenIdAmount, id: firstTokenId },
-      );
+      const receipt = await this.token.mint(other, firstTokenId, firstTokenIdAmount, '0x', {
+        from: deployer,
+      });
+      expectEvent(receipt, 'TransferSingle', {
+        operator: deployer,
+        from: ZERO_ADDRESS,
+        to: other,
+        value: firstTokenIdAmount,
+        id: firstTokenId,
+      });
 
-      expect(await this.token.balanceOf(other, firstTokenId)).to.be.bignumber.equal(firstTokenIdAmount);
+      expect(await this.token.balanceOf(other, firstTokenId)).to.be.bignumber.equal(
+        firstTokenIdAmount,
+      );
     });
 
     it('other accounts cannot mint tokens', async function () {
       await expectRevert(
-        this.token.mint(other, firstTokenId, firstTokenIdAmount, '0x', { from: other }),
+        this.token.mint(other, firstTokenId, firstTokenIdAmount, '0x', {from: other}),
         'ERC1155PresetMinterPauser: must have minter role to mint',
       );
     });
@@ -68,20 +78,28 @@ contract('ERC1155PresetMinterPauser', function (accounts) {
   describe('batched minting', function () {
     it('deployer can batch mint tokens', async function () {
       const receipt = await this.token.mintBatch(
-        other, [firstTokenId, secondTokenId], [firstTokenIdAmount, secondTokenIdAmount], '0x', { from: deployer },
+        other,
+        [firstTokenId, secondTokenId],
+        [firstTokenIdAmount, secondTokenIdAmount],
+        '0x',
+        {from: deployer},
       );
 
-      expectEvent(receipt, 'TransferBatch',
-        { operator: deployer, from: ZERO_ADDRESS, to: other },
-      );
+      expectEvent(receipt, 'TransferBatch', {operator: deployer, from: ZERO_ADDRESS, to: other});
 
-      expect(await this.token.balanceOf(other, firstTokenId)).to.be.bignumber.equal(firstTokenIdAmount);
+      expect(await this.token.balanceOf(other, firstTokenId)).to.be.bignumber.equal(
+        firstTokenIdAmount,
+      );
     });
 
     it('other accounts cannot batch mint tokens', async function () {
       await expectRevert(
         this.token.mintBatch(
-          other, [firstTokenId, secondTokenId], [firstTokenIdAmount, secondTokenIdAmount], '0x', { from: other },
+          other,
+          [firstTokenId, secondTokenId],
+          [firstTokenIdAmount, secondTokenIdAmount],
+          '0x',
+          {from: other},
         ),
         'ERC1155PresetMinterPauser: must have minter role to mint',
       );
@@ -90,42 +108,42 @@ contract('ERC1155PresetMinterPauser', function (accounts) {
 
   describe('pausing', function () {
     it('deployer can pause', async function () {
-      const receipt = await this.token.pause({ from: deployer });
-      expectEvent(receipt, 'Paused', { account: deployer });
+      const receipt = await this.token.pause({from: deployer});
+      expectEvent(receipt, 'Paused', {account: deployer});
 
       expect(await this.token.paused()).to.equal(true);
     });
 
     it('deployer can unpause', async function () {
-      await this.token.pause({ from: deployer });
+      await this.token.pause({from: deployer});
 
-      const receipt = await this.token.unpause({ from: deployer });
-      expectEvent(receipt, 'Unpaused', { account: deployer });
+      const receipt = await this.token.unpause({from: deployer});
+      expectEvent(receipt, 'Unpaused', {account: deployer});
 
       expect(await this.token.paused()).to.equal(false);
     });
 
     it('cannot mint while paused', async function () {
-      await this.token.pause({ from: deployer });
+      await this.token.pause({from: deployer});
 
       await expectRevert(
-        this.token.mint(other, firstTokenId, firstTokenIdAmount, '0x', { from: deployer }),
+        this.token.mint(other, firstTokenId, firstTokenIdAmount, '0x', {from: deployer}),
         'ERC1155Pausable: token transfer while paused',
       );
     });
 
     it('other accounts cannot pause', async function () {
       await expectRevert(
-        this.token.pause({ from: other }),
+        this.token.pause({from: other}),
         'ERC1155PresetMinterPauser: must have pauser role to pause',
       );
     });
 
     it('other accounts cannot unpause', async function () {
-      await this.token.pause({ from: deployer });
+      await this.token.pause({from: deployer});
 
       await expectRevert(
-        this.token.unpause({ from: other }),
+        this.token.unpause({from: other}),
         'ERC1155PresetMinterPauser: must have pauser role to unpause',
       );
     });
@@ -133,12 +151,18 @@ contract('ERC1155PresetMinterPauser', function (accounts) {
 
   describe('burning', function () {
     it('holders can burn their tokens', async function () {
-      await this.token.mint(other, firstTokenId, firstTokenIdAmount, '0x', { from: deployer });
+      await this.token.mint(other, firstTokenId, firstTokenIdAmount, '0x', {from: deployer});
 
-      const receipt = await this.token.burn(other, firstTokenId, firstTokenIdAmount.subn(1), { from: other });
-      expectEvent(receipt, 'TransferSingle',
-        { operator: other, from: other, to: ZERO_ADDRESS, value: firstTokenIdAmount.subn(1), id: firstTokenId },
-      );
+      const receipt = await this.token.burn(other, firstTokenId, firstTokenIdAmount.subn(1), {
+        from: other,
+      });
+      expectEvent(receipt, 'TransferSingle', {
+        operator: other,
+        from: other,
+        to: ZERO_ADDRESS,
+        value: firstTokenIdAmount.subn(1),
+        id: firstTokenId,
+      });
 
       expect(await this.token.balanceOf(other, firstTokenId)).to.be.bignumber.equal('1');
     });

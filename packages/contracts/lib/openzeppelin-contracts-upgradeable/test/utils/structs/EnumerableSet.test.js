@@ -1,10 +1,10 @@
-const { BN } = require('@openzeppelin/test-helpers');
+const {BN} = require('@openzeppelin/test-helpers');
 
 const EnumerableBytes32SetMock = artifacts.require('EnumerableBytes32SetMock');
 const EnumerableAddressSetMock = artifacts.require('EnumerableAddressSetMock');
 const EnumerableUintSetMock = artifacts.require('EnumerableUintSetMock');
 
-const { shouldBehaveLikeSet } = require('./EnumerableSet.behavior');
+const {shouldBehaveLikeSet} = require('./EnumerableSet.behavior');
 
 contract('EnumerableSet', function (accounts) {
   // Bytes32Set

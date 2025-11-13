@@ -25,10 +25,11 @@ if (!header.test(changelog)) {
   process.exit(1);
 }
 
-const newHeader = pkg.version.indexOf(suffix) === -1
-  ? `## ${version} (${new Date().toISOString().split('T')[0]})`
-  : `## ${version}`;
+const newHeader =
+  pkg.version.indexOf(suffix) === -1
+    ? `## ${version} (${new Date().toISOString().split('T')[0]})`
+    : `## ${version}`;
 
 fs.writeFileSync('CHANGELOG.md', changelog.replace(header, newHeader));
 
-cp.execSync('git add CHANGELOG.md', { stdio: 'inherit' });
+cp.execSync('git add CHANGELOG.md', {stdio: 'inherit'});

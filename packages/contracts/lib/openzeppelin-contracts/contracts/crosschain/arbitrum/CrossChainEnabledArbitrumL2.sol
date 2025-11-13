@@ -3,8 +3,8 @@
 
 pragma solidity ^0.8.4;
 
-import "../CrossChainEnabled.sol";
-import "./LibArbitrumL2.sol";
+import '../CrossChainEnabled.sol';
+import './LibArbitrumL2.sol';
 
 /**
  * @dev https://arbitrum.io/[Arbitrum] specialization or the
@@ -24,17 +24,17 @@ import "./LibArbitrumL2.sol";
  * August 31st 2022.
  */
 abstract contract CrossChainEnabledArbitrumL2 is CrossChainEnabled {
-    /**
-     * @dev see {CrossChainEnabled-_isCrossChain}
-     */
-    function _isCrossChain() internal view virtual override returns (bool) {
-        return LibArbitrumL2.isCrossChain(LibArbitrumL2.ARBSYS);
-    }
+  /**
+   * @dev see {CrossChainEnabled-_isCrossChain}
+   */
+  function _isCrossChain() internal view virtual override returns (bool) {
+    return LibArbitrumL2.isCrossChain(LibArbitrumL2.ARBSYS);
+  }
 
-    /**
-     * @dev see {CrossChainEnabled-_crossChainSender}
-     */
-    function _crossChainSender() internal view virtual override onlyCrossChain returns (address) {
-        return LibArbitrumL2.crossChainSender(LibArbitrumL2.ARBSYS);
-    }
+  /**
+   * @dev see {CrossChainEnabled-_crossChainSender}
+   */
+  function _crossChainSender() internal view virtual override onlyCrossChain returns (address) {
+    return LibArbitrumL2.crossChainSender(LibArbitrumL2.ARBSYS);
+  }
 }

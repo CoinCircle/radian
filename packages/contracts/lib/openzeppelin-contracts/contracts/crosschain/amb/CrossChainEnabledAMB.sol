@@ -3,8 +3,8 @@
 
 pragma solidity ^0.8.4;
 
-import "../CrossChainEnabled.sol";
-import "./LibAMB.sol";
+import '../CrossChainEnabled.sol';
+import './LibAMB.sol';
 
 /**
  * @dev https://docs.tokenbridge.net/amb-bridge/about-amb-bridge[AMB]
@@ -25,25 +25,25 @@ import "./LibAMB.sol";
  * _Available since v4.6._
  */
 contract CrossChainEnabledAMB is CrossChainEnabled {
-    /// @custom:oz-upgrades-unsafe-allow state-variable-immutable
-    address private immutable _bridge;
+  /// @custom:oz-upgrades-unsafe-allow state-variable-immutable
+  address private immutable _bridge;
 
-    /// @custom:oz-upgrades-unsafe-allow constructor
-    constructor(address bridge) {
-        _bridge = bridge;
-    }
+  /// @custom:oz-upgrades-unsafe-allow constructor
+  constructor(address bridge) {
+    _bridge = bridge;
+  }
 
-    /**
-     * @dev see {CrossChainEnabled-_isCrossChain}
-     */
-    function _isCrossChain() internal view virtual override returns (bool) {
-        return LibAMB.isCrossChain(_bridge);
-    }
+  /**
+   * @dev see {CrossChainEnabled-_isCrossChain}
+   */
+  function _isCrossChain() internal view virtual override returns (bool) {
+    return LibAMB.isCrossChain(_bridge);
+  }
 
-    /**
-     * @dev see {CrossChainEnabled-_crossChainSender}
-     */
-    function _crossChainSender() internal view virtual override onlyCrossChain returns (address) {
-        return LibAMB.crossChainSender(_bridge);
-    }
+  /**
+   * @dev see {CrossChainEnabled-_crossChainSender}
+   */
+  function _crossChainSender() internal view virtual override onlyCrossChain returns (address) {
+    return LibAMB.crossChainSender(_bridge);
+  }
 }

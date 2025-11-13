@@ -1,7 +1,7 @@
-const { BN } = require('@openzeppelin/test-helpers');
+const {BN} = require('@openzeppelin/test-helpers');
 
-function Enum (...options) {
-  return Object.fromEntries(options.map((key, i) => [ key, new BN(i) ]));
+function Enum(...options) {
+  return Object.fromEntries(options.map((key, i) => [key, new BN(i)]));
 }
 
 module.exports = {
@@ -16,14 +16,6 @@ module.exports = {
     'Expired',
     'Executed',
   ),
-  VoteType: Enum(
-    'Against',
-    'For',
-    'Abstain',
-  ),
-  Rounding: Enum(
-    'Down',
-    'Up',
-    'Zero',
-  ),
+  VoteType: Enum('Against', 'For', 'Abstain'),
+  Rounding: Enum('Down', 'Up', 'Zero'),
 };

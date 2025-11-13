@@ -6,7 +6,6 @@ import * as Types from '../../types';
 import { Contracts } from '../types';
 import { Deployer } from '@matterlabs/hardhat-zksync-deploy';
 
-
 export default async function (
   wallet: Wallet,
   receiver: Wallet,
@@ -73,9 +72,12 @@ export default async function (
     // get the logs from the tx
     const receipt = await provider.getTransactionReceipt(txHash);
     // decode logs using exchange pool factory abi
-    const decodedLogs = await pool?.queryFilter(pool.filters.Swap(), receipt.blockNumber, receipt.blockNumber);
+    const decodedLogs = await pool?.queryFilter(
+      pool.filters.Swap(),
+      receipt.blockNumber,
+      receipt.blockNumber,
+    );
     console.log(decodedLogs);
-
   }
 
   console.log(
@@ -84,16 +86,13 @@ export default async function (
 
   const receipt = await provider.getTransactionReceipt(txHash);
   // decode logs for all contracts
-  receipt.logs.forEach((log) => {
-    console.log({ log })
+  receipt.logs.forEach(log => {
+    console.log({ log });
     try {
       const decodedLog = contracts.radianPaymaster.interface.parseLog(log);
       console.log(decodedLog);
     } catch (e) {}
   });
-
-
-
 }
 
 // The paymaster will only accept tokens that have uniswap liquidity. So we
@@ -116,7 +115,7 @@ async function ensureUniswapPool(
       await contracts.exchangePoolFactory.createPool(
         contracts.weth.address,
         contracts.radianX.address,
-        ethers.BigNumber.from(`3000`)
+        ethers.BigNumber.from(`3000`),
       )
     ).wait();
   }
@@ -130,23 +129,25 @@ async function ensureUniswapPool(
     throw new Error(`No uniswap pool found`);
   }
   const gasPrice = await provider.getGasPrice();
-  const deployer = Deployer.fromEthWallet(hre, wallet)
+  const deployer = Deployer.fromEthWallet(hre, wallet);
   const palArtifact = await deployer.loadArtifact(`PoolAddress`);
 
-  const contract = (await (
-    deployer.deploy(palArtifact, [], {
-      gasPrice
-    })
-  ));
+  const contract = await deployer.deploy(palArtifact, [], {
+    gasPrice,
+  });
 
   const palFactory = await hre.ethers.getContractFactory('PoolAddress');
   const palContract = palFactory.connect(wallet).attach(contract.address);
-  const token0 = contracts.weth.address < contracts.radianX.address ? contracts.weth.address : contracts.radianX.address;
-  const token1 = contracts.weth.address < contracts.radianX.address ? contracts.radianX.address : contracts.weth.address;
+  const token0 =
+    contracts.weth.address < contracts.radianX.address
+      ? contracts.weth.address
+      : contracts.radianX.address;
+  const token1 =
+    contracts.weth.address < contracts.radianX.address
+      ? contracts.radianX.address
+      : contracts.weth.address;
 
   console.log('actual pool address', pool);
-
-
 
   const poolArtifact = await hre.ethers.getContractFactory(`ExchangePool`);
   const bytecode = (await deployer.loadArtifact(`ExchangePool`)).deployedBytecode;
@@ -157,7 +158,12 @@ async function ensureUniswapPool(
   const c2 = utils.create2Address(
     contracts.exchangePoolFactory.address,
     bytecodeHash,
-    ethers.utils.keccak256(abiCoder.encode(['address', 'address', 'uint24'], [token0, token1, ethers.BigNumber.from(`3000`)])),
+    ethers.utils.keccak256(
+      abiCoder.encode(
+        ['address', 'address', 'uint24'],
+        [token0, token1, ethers.BigNumber.from(`3000`)],
+      ),
+    ),
     '0x',
   );
   console.log(`sdk-computed pool address: ${c2}`);
@@ -223,7 +229,9 @@ async function ensureUniswapPool(
     const { sqrtPriceX96 } = await poolContract.slot0();
     console.log(`sqrtPriceX96: ${sqrtPriceX96.toString()}`);
     if (sqrtPriceX96.eq(0)) {
-      await (await poolContract.initialize(ethers.BigNumber.from(`79228162514243400000000000000`))).wait();
+      await (
+        await poolContract.initialize(ethers.BigNumber.from(`79228162514243400000000000000`))
+      ).wait();
     }
     const params: Types.INonfungiblePositionManager.MintParamsStruct = {
       token0,

@@ -1,19 +1,18 @@
 {
-    "arrowParens": "avoid",
-    "bracketSpacing": false,
-    "endOfLine": "lf",
-    "printWidth": 100,
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "all",
-    "explicitTypes": "always",
-    "semi": true,
-    "overrides": [
-        {
-            "files": "*.ts",
-            "options": {
-                "bracketSpacing": true
-            }
-        }
-    ]
+  "arrowParens": "avoid",
+  "bracketSpacing": false,
+  "endOfLine": "lf",
+  "printWidth": 100,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "semi": true,
+  "overrides": [
+    {
+      "files": "*.ts",
+      "options": {
+        "bracketSpacing": true
+      }
+    }
+  ]
 }

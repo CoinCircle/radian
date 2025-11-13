@@ -3,10 +3,10 @@
 
 pragma solidity ^0.8.4;
 
-import "../CrossChainEnabled.sol";
-import "../../security/ReentrancyGuard.sol";
-import "../../utils/Address.sol";
-import "../../vendor/polygon/IFxMessageProcessor.sol";
+import '../CrossChainEnabled.sol';
+import '../../security/ReentrancyGuard.sol';
+import '../../utils/Address.sol';
+import '../../vendor/polygon/IFxMessageProcessor.sol';
 
 address constant DEFAULT_SENDER = 0x000000000000000000000000000000000000dEaD;
 
@@ -23,50 +23,54 @@ address constant DEFAULT_SENDER = 0x000000000000000000000000000000000000dEaD;
  *
  * _Available since v4.6._
  */
-abstract contract CrossChainEnabledPolygonChild is IFxMessageProcessor, CrossChainEnabled, ReentrancyGuard {
-    /// @custom:oz-upgrades-unsafe-allow state-variable-immutable
-    address private immutable _fxChild;
-    address private _sender = DEFAULT_SENDER;
+abstract contract CrossChainEnabledPolygonChild is
+  IFxMessageProcessor,
+  CrossChainEnabled,
+  ReentrancyGuard
+{
+  /// @custom:oz-upgrades-unsafe-allow state-variable-immutable
+  address private immutable _fxChild;
+  address private _sender = DEFAULT_SENDER;
 
-    /// @custom:oz-upgrades-unsafe-allow constructor
-    constructor(address fxChild) {
-        _fxChild = fxChild;
-    }
+  /// @custom:oz-upgrades-unsafe-allow constructor
+  constructor(address fxChild) {
+    _fxChild = fxChild;
+  }
 
-    /**
-     * @dev see {CrossChainEnabled-_isCrossChain}
-     */
-    function _isCrossChain() internal view virtual override returns (bool) {
-        return msg.sender == _fxChild;
-    }
+  /**
+   * @dev see {CrossChainEnabled-_isCrossChain}
+   */
+  function _isCrossChain() internal view virtual override returns (bool) {
+    return msg.sender == _fxChild;
+  }
 
-    /**
-     * @dev see {CrossChainEnabled-_crossChainSender}
-     */
-    function _crossChainSender() internal view virtual override onlyCrossChain returns (address) {
-        return _sender;
-    }
+  /**
+   * @dev see {CrossChainEnabled-_crossChainSender}
+   */
+  function _crossChainSender() internal view virtual override onlyCrossChain returns (address) {
+    return _sender;
+  }
 
-    /**
-     * @dev External entry point to receive and relay messages originating
-     * from the fxChild.
-     *
-     * Non-reentrancy is crucial to avoid a cross-chain call being able
-     * to impersonate anyone by just looping through this with user-defined
-     * arguments.
-     *
-     * Note: if _fxChild calls any other function that does a delegate-call,
-     * then security could be compromised.
-     */
-    function processMessageFromRoot(
-        uint256, /* stateId */
-        address rootMessageSender,
-        bytes calldata data
-    ) external override nonReentrant {
-        if (!_isCrossChain()) revert NotCrossChainCall();
+  /**
+   * @dev External entry point to receive and relay messages originating
+   * from the fxChild.
+   *
+   * Non-reentrancy is crucial to avoid a cross-chain call being able
+   * to impersonate anyone by just looping through this with user-defined
+   * arguments.
+   *
+   * Note: if _fxChild calls any other function that does a delegate-call,
+   * then security could be compromised.
+   */
+  function processMessageFromRoot(
+    uint256 /* stateId */,
+    address rootMessageSender,
+    bytes calldata data
+  ) external override nonReentrant {
+    if (!_isCrossChain()) revert NotCrossChainCall();
 
-        _sender = rootMessageSender;
-        Address.functionDelegateCall(address(this), data, "cross-chain execution failed");
-        _sender = DEFAULT_SENDER;
-    }
+    _sender = rootMessageSender;
+    Address.functionDelegateCall(address(this), data, 'cross-chain execution failed');
+    _sender = DEFAULT_SENDER;
+  }
 }

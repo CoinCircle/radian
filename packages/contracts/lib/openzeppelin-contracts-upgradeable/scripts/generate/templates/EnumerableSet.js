@@ -1,10 +1,10 @@
 const format = require('../format-lines');
-const { fromBytes32, toBytes32 } = require('./conversion');
+const {fromBytes32, toBytes32} = require('./conversion');
 
 const TYPES = [
-  { name: 'Bytes32Set', type: 'bytes32' },
-  { name: 'AddressSet', type: 'address' },
-  { name: 'UintSet', type: 'uint256' },
+  {name: 'Bytes32Set', type: 'bytes32'},
+  {name: 'AddressSet', type: 'address'},
+  {name: 'UintSet', type: 'uint256'},
 ];
 
 /* eslint-disable max-len */
@@ -165,7 +165,7 @@ function _values(Set storage set) private view returns (bytes32[] memory) {
 }
 `;
 
-const customSet = ({ name, type }) => `\
+const customSet = ({name, type}) => `\
 // ${name}
 
 struct ${name} {
@@ -245,9 +245,6 @@ function values(${name} storage set) internal view returns (${type}[] memory) {
 module.exports = format(
   header.trimEnd(),
   'library EnumerableSet {',
-  [
-    defaultSet(),
-    TYPES.map(details => customSet(details).trimEnd()).join('\n\n'),
-  ],
+  [defaultSet(), TYPES.map(details => customSet(details).trimEnd()).join('\n\n')],
   '}',
 );

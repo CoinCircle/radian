@@ -1,11 +1,11 @@
-const { BN, expectEvent } = require('@openzeppelin/test-helpers');
-const { expect } = require('chai');
+const {BN, expectEvent} = require('@openzeppelin/test-helpers');
+const {expect} = require('chai');
 const ethSigUtil = require('eth-sig-util');
 const Wallet = require('ethereumjs-wallet').default;
-const { fromRpcSig } = require('ethereumjs-util');
+const {fromRpcSig} = require('ethereumjs-util');
 const Enums = require('../../helpers/enums');
-const { EIP712Domain } = require('../../helpers/eip712');
-const { GovernorHelper } = require('../../helpers/governance');
+const {EIP712Domain} = require('../../helpers/eip712');
+const {GovernorHelper} = require('../../helpers/governance');
 
 const Token = artifacts.require('ERC20VotesCompMock');
 const Governor = artifacts.require('GovernorWithParamsMock');
@@ -17,12 +17,12 @@ const rawParams = {
 };
 
 const encodedParams = web3.eth.abi.encodeParameters(
-  [ 'uint256', 'string' ],
+  ['uint256', 'string'],
   Object.values(rawParams),
 );
 
 contract('GovernorWithParams', function (accounts) {
-  const [ owner, proposer, voter1, voter2, voter3, voter4 ] = accounts;
+  const [owner, proposer, voter1, voter2, voter3, voter4] = accounts;
 
   const name = 'OZ-Governor';
   const version = '1';
@@ -41,22 +41,37 @@ contract('GovernorWithParams', function (accounts) {
 
     this.helper = new GovernorHelper(this.mock);
 
-    await web3.eth.sendTransaction({ from: owner, to: this.mock.address, value });
+    await web3.eth.sendTransaction({from: owner, to: this.mock.address, value});
 
     await this.token.mint(owner, tokenSupply);
-    await this.helper.delegate({ token: this.token, to: voter1, value: web3.utils.toWei('10') }, { from: owner });
-    await this.helper.delegate({ token: this.token, to: voter2, value: web3.utils.toWei('7') }, { from: owner });
-    await this.helper.delegate({ token: this.token, to: voter3, value: web3.utils.toWei('5') }, { from: owner });
-    await this.helper.delegate({ token: this.token, to: voter4, value: web3.utils.toWei('2') }, { from: owner });
+    await this.helper.delegate(
+      {token: this.token, to: voter1, value: web3.utils.toWei('10')},
+      {from: owner},
+    );
+    await this.helper.delegate(
+      {token: this.token, to: voter2, value: web3.utils.toWei('7')},
+      {from: owner},
+    );
+    await this.helper.delegate(
+      {token: this.token, to: voter3, value: web3.utils.toWei('5')},
+      {from: owner},
+    );
+    await this.helper.delegate(
+      {token: this.token, to: voter4, value: web3.utils.toWei('2')},
+      {from: owner},
+    );
 
     // default proposal
-    this.proposal = this.helper.setProposal([
-      {
-        target: this.receiver.address,
-        value,
-        data: this.receiver.contract.methods.mockFunction().encodeABI(),
-      },
-    ], '<proposal description>');
+    this.proposal = this.helper.setProposal(
+      [
+        {
+          target: this.receiver.address,
+          value,
+          data: this.receiver.contract.methods.mockFunction().encodeABI(),
+        },
+      ],
+      '<proposal description>',
+    );
   });
 
   it('deployment check', async function () {
@@ -67,12 +82,12 @@ contract('GovernorWithParams', function (accounts) {
   });
 
   it('nominal is unaffected', async function () {
-    await this.helper.propose({ from: proposer });
+    await this.helper.propose({from: proposer});
     await this.helper.waitForSnapshot();
-    await this.helper.vote({ support: Enums.VoteType.For, reason: 'This is nice' }, { from: voter1 });
-    await this.helper.vote({ support: Enums.VoteType.For }, { from: voter2 });
-    await this.helper.vote({ support: Enums.VoteType.Against }, { from: voter3 });
-    await this.helper.vote({ support: Enums.VoteType.Abstain }, { from: voter4 });
+    await this.helper.vote({support: Enums.VoteType.For, reason: 'This is nice'}, {from: voter1});
+    await this.helper.vote({support: Enums.VoteType.For}, {from: voter2});
+    await this.helper.vote({support: Enums.VoteType.Against}, {from: voter3});
+    await this.helper.vote({support: Enums.VoteType.Abstain}, {from: voter4});
     await this.helper.waitForDeadline();
     await this.helper.execute();
 
@@ -84,18 +99,21 @@ contract('GovernorWithParams', function (accounts) {
   });
 
   it('Voting with params is properly supported', async function () {
-    await this.helper.propose({ from: proposer });
+    await this.helper.propose({from: proposer});
     await this.helper.waitForSnapshot();
 
     const weight = new BN(web3.utils.toWei('7')).sub(rawParams.uintParam);
 
-    const tx = await this.helper.vote({
-      support: Enums.VoteType.For,
-      reason: 'no particular reason',
-      params: encodedParams,
-    }, { from: voter2 });
+    const tx = await this.helper.vote(
+      {
+        support: Enums.VoteType.For,
+        reason: 'no particular reason',
+        params: encodedParams,
+      },
+      {from: voter2},
+    );
 
-    expectEvent(tx, 'CountParams', { ...rawParams });
+    expectEvent(tx, 'CountParams', {...rawParams});
     expectEvent(tx, 'VoteCastWithParams', {
       voter: voter2,
       proposalId: this.proposal.id,
@@ -113,29 +131,28 @@ contract('GovernorWithParams', function (accounts) {
     const voterBySig = Wallet.generate();
     const voterBySigAddress = web3.utils.toChecksumAddress(voterBySig.getAddressString());
 
-    const signature = async (message) => {
-      return fromRpcSig(ethSigUtil.signTypedMessage(
-        voterBySig.getPrivateKey(),
-        {
+    const signature = async message => {
+      return fromRpcSig(
+        ethSigUtil.signTypedMessage(voterBySig.getPrivateKey(), {
           data: {
             types: {
               EIP712Domain,
               ExtendedBallot: [
-                { name: 'proposalId', type: 'uint256' },
-                { name: 'support', type: 'uint8' },
-                { name: 'reason', type: 'string' },
-                { name: 'params', type: 'bytes' },
+                {name: 'proposalId', type: 'uint256'},
+                {name: 'support', type: 'uint8'},
+                {name: 'reason', type: 'string'},
+                {name: 'params', type: 'bytes'},
               ],
             },
-            domain: { name, version, chainId: this.chainId, verifyingContract: this.mock.address },
+            domain: {name, version, chainId: this.chainId, verifyingContract: this.mock.address},
             primaryType: 'ExtendedBallot',
             message,
           },
-        },
-      ));
+        }),
+      );
     };
 
-    await this.token.delegate(voterBySigAddress, { from: voter2 });
+    await this.token.delegate(voterBySigAddress, {from: voter2});
 
     // Run proposal
     await this.helper.propose();
@@ -150,7 +167,7 @@ contract('GovernorWithParams', function (accounts) {
       signature,
     });
 
-    expectEvent(tx, 'CountParams', { ...rawParams });
+    expectEvent(tx, 'CountParams', {...rawParams});
     expectEvent(tx, 'VoteCastWithParams', {
       voter: voterBySigAddress,
       proposalId: this.proposal.id,

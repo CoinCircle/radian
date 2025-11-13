@@ -1,11 +1,11 @@
 const format = require('../format-lines');
 
 const TYPES = [
-  { name: 'UintToAddressMap', keyType: 'uint256', valueType: 'address' },
-  { name: 'AddressToUintMap', keyType: 'address', valueType: 'uint256' },
-  { name: 'Bytes32ToBytes32Map', keyType: 'bytes32', valueType: 'bytes32' },
-  { name: 'UintToUintMap', keyType: 'uint256', valueType: 'uint256' },
-  { name: 'Bytes32ToUintMap', keyType: 'bytes32', valueType: 'uint256' },
+  {name: 'UintToAddressMap', keyType: 'uint256', valueType: 'address'},
+  {name: 'AddressToUintMap', keyType: 'address', valueType: 'uint256'},
+  {name: 'Bytes32ToBytes32Map', keyType: 'bytes32', valueType: 'bytes32'},
+  {name: 'UintToUintMap', keyType: 'uint256', valueType: 'uint256'},
+  {name: 'Bytes32ToUintMap', keyType: 'bytes32', valueType: 'uint256'},
 ];
 
 const header = `\
@@ -14,7 +14,7 @@ pragma solidity ^0.8.0;
 import "../utils/structs/EnumerableMap.sol";
 `;
 
-const customSetMock = ({ name, keyType, valueType }) => `\
+const customSetMock = ({name, keyType, valueType}) => `\
 // ${name}
 contract ${name}Mock {
     using EnumerableMap for EnumerableMap.${name};
@@ -60,7 +60,4 @@ contract ${name}Mock {
 `;
 
 // GENERATE
-module.exports = format(
-  header,
-  ...TYPES.map(details => customSetMock(details)),
-);
+module.exports = format(header, ...TYPES.map(details => customSetMock(details)));

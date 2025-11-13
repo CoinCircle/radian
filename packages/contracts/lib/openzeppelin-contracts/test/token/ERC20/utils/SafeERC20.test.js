@@ -1,4 +1,4 @@
-const { constants, expectRevert } = require('@openzeppelin/test-helpers');
+const {constants, expectRevert} = require('@openzeppelin/test-helpers');
 
 const ERC20ReturnFalseMock = artifacts.require('ERC20ReturnFalseMock');
 const ERC20ReturnTrueMock = artifacts.require('ERC20ReturnTrueMock');
@@ -6,14 +6,14 @@ const ERC20NoReturnMock = artifacts.require('ERC20NoReturnMock');
 const ERC20PermitNoRevertMock = artifacts.require('ERC20PermitNoRevertMock');
 const SafeERC20Wrapper = artifacts.require('SafeERC20Wrapper');
 
-const { EIP712Domain, Permit } = require('../../../helpers/eip712');
+const {EIP712Domain, Permit} = require('../../../helpers/eip712');
 
-const { fromRpcSig } = require('ethereumjs-util');
+const {fromRpcSig} = require('ethereumjs-util');
 const ethSigUtil = require('eth-sig-util');
 const Wallet = require('ethereumjs-wallet').default;
 
 contract('SafeERC20', function (accounts) {
-  const [ hasNoCode ] = accounts;
+  const [hasNoCode] = accounts;
 
   describe('with address that has no contract code', function () {
     beforeEach(async function () {
@@ -47,7 +47,7 @@ contract('SafeERC20', function (accounts) {
     shouldOnlyRevertOnErrors();
   });
 
-  describe('with token that doesn\'t revert on invalid permit', function () {
+  describe("with token that doesn't revert on invalid permit", function () {
     const wallet = Wallet.generate();
     const owner = wallet.getAddressString();
     const spender = hasNoCode;
@@ -60,11 +60,18 @@ contract('SafeERC20', function (accounts) {
 
       this.data = {
         primaryType: 'Permit',
-        types: { EIP712Domain, Permit },
-        domain: { name: 'ERC20PermitNoRevertMock', version: '1', chainId, verifyingContract: this.token.address },
-        message: { owner, spender, value: '42', nonce: '0', deadline: constants.MAX_UINT256 },
+        types: {EIP712Domain, Permit},
+        domain: {
+          name: 'ERC20PermitNoRevertMock',
+          version: '1',
+          chainId,
+          verifyingContract: this.token.address,
+        },
+        message: {owner, spender, value: '42', nonce: '0', deadline: constants.MAX_UINT256},
       };
-      this.signature = fromRpcSig(ethSigUtil.signTypedMessage(wallet.getPrivateKey(), { data: this.data }));
+      this.signature = fromRpcSig(
+        ethSigUtil.signTypedMessage(wallet.getPrivateKey(), {data: this.data}),
+      );
     });
 
     it('accepts owner signature', async function () {
@@ -82,7 +89,9 @@ contract('SafeERC20', function (accounts) {
       );
 
       expect(await this.token.nonces(owner)).to.be.bignumber.equal('1');
-      expect(await this.token.allowance(owner, spender)).to.be.bignumber.equal(this.data.message.value);
+      expect(await this.token.allowance(owner, spender)).to.be.bignumber.equal(
+        this.data.message.value,
+      );
     });
 
     it('revert on reused signature', async function () {
@@ -161,7 +170,7 @@ contract('SafeERC20', function (accounts) {
   });
 });
 
-function shouldRevertOnAllCalls (reason) {
+function shouldRevertOnAllCalls(reason) {
   it('reverts on transfer', async function () {
     await expectRevert(this.wrapper.transfer(), reason);
   });
@@ -185,12 +194,12 @@ function shouldRevertOnAllCalls (reason) {
   });
 }
 
-function shouldOnlyRevertOnErrors () {
-  it('doesn\'t revert on transfer', async function () {
+function shouldOnlyRevertOnErrors() {
+  it("doesn't revert on transfer", async function () {
     await this.wrapper.transfer();
   });
 
-  it('doesn\'t revert on transferFrom', async function () {
+  it("doesn't revert on transferFrom", async function () {
     await this.wrapper.transferFrom();
   });
 
@@ -200,15 +209,15 @@ function shouldOnlyRevertOnErrors () {
         await this.wrapper.setAllowance(0);
       });
 
-      it('doesn\'t revert when approving a non-zero allowance', async function () {
+      it("doesn't revert when approving a non-zero allowance", async function () {
         await this.wrapper.approve(100);
       });
 
-      it('doesn\'t revert when approving a zero allowance', async function () {
+      it("doesn't revert when approving a zero allowance", async function () {
         await this.wrapper.approve(0);
       });
 
-      it('doesn\'t revert when increasing the allowance', async function () {
+      it("doesn't revert when increasing the allowance", async function () {
         await this.wrapper.increaseAllowance(10);
       });
 
@@ -232,15 +241,15 @@ function shouldOnlyRevertOnErrors () {
         );
       });
 
-      it('doesn\'t revert when approving a zero allowance', async function () {
+      it("doesn't revert when approving a zero allowance", async function () {
         await this.wrapper.approve(0);
       });
 
-      it('doesn\'t revert when increasing the allowance', async function () {
+      it("doesn't revert when increasing the allowance", async function () {
         await this.wrapper.increaseAllowance(10);
       });
 
-      it('doesn\'t revert when decreasing the allowance to a positive value', async function () {
+      it("doesn't revert when decreasing the allowance to a positive value", async function () {
         await this.wrapper.decreaseAllowance(50);
       });
 
