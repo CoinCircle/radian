@@ -22,7 +22,7 @@ jobs:
             - name: Install the Node.js dependencies
               run: yarn install
             - name: Lint the contracts
-              run: npm run lint
+              run: yarn workspace @coincircle/radian lint
             - name: Add lint summary
               run: |
                   echo "## Lint" >> $GITHUB_STEP_SUMMARY
