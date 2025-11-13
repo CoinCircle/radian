@@ -22,9 +22,7 @@ jobs:
             - name: Install the Node.js dependencies
               run: npm i
             - name: Install Foundry
-              uses: onbjerg/foundry-toolchain@v1
-              with:
-                  version: nightly
+              uses: foundry-rs/foundry-toolchain@v1
             - name: Show the Foundry config
               run: forge config
             - name: Run the tests
