@@ -20,6 +20,6 @@ jobs:
             - name: Install Node.js
               uses: actions/setup-node@v3
             - name: Install the Node.js dependencies
-              run: npm i
+              run: yarn install
             - name: Run Integration Test Coverage
               run: npm run coverage
