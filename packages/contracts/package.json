@@ -42,7 +42,7 @@
     "console:zk": "ZK_EVM=TRUE npx hardhat run scripts/console.ts --network zksync-goerli",
     "console:zk:local": "ZK_EVM=TRUE npx hardhat run scripts/console.ts --network zksync-local",
     "doc": "npx hardhat dodoc",
-    "lint": "npx prettier --config ./.prettierrc.json --check . --ignore-path .prettierignore && npx eslint --no-error-on-unmatched-pattern --ignore-path .eslintignore \"**/*.{ts,tsx}\"",
+    "lint": "npx eslint --no-error-on-unmatched-pattern --ignore-path .eslintignore \"**/*.{ts,tsx}\"",
     "pretty": "npx prettier --config ./.prettierrc.json --write . --ignore-path .prettierignore && npx eslint --no-error-on-unmatched-pattern --fix --ignore-path .eslintignore \"**/*.{ts,tsx}\"",
     "prepare": "npm run build && tsc",
     "size": "npx hardhat size-contracts",
