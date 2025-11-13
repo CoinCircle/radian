@@ -251,7 +251,8 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       accounts: {
-        mnemonic: process.env.MNEMONIC || 'test test test test test test test test test test test junk',
+        mnemonic:
+          process.env.MNEMONIC || `test test test test test test test test test test test junk`,
       },
       allowUnlimitedContractSize: true,
       chainId: chainIds.hardhat,
