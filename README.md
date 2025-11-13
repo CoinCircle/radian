@@ -1,6 +1,6 @@
 # Radian Protocol
 
-Radian is an end-to-end DeFi protocol that provides a set of financial primitives enabling featurs far beyond that of CeFi systems while maintaining the trustlessness and decentralization of DeFi.
+Radian is an autonomous DeFi protocol that provides a set of financial primitives enabling features far beyond what is capable with CeFi systems while maintaining the trustlessness and decentralization of DeFi.
 
 Built on zkSync Era with account abstraction capabilities, Radian enables gasless transactions, smart wallets, and a unified liquidity layer across trading, lending, and synthetic derivatives.
 
