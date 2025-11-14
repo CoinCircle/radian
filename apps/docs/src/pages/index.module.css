@@ -1,18 +1,31 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
-
 .heroBanner {
-  padding: 4rem 0;
+  padding: 6rem 0;
   text-align: center;
   position: relative;
   overflow: hidden;
+  background: transparent;
 }
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
+.logoContainer {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  height: 350px;
+  width: 350px;
+  filter: drop-shadow(0 0 30px rgba(89, 52, 214, 0.5));
+  animation: glow 3s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 20px rgba(89, 52, 214, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 40px rgba(89, 52, 214, 0.8));
   }
 }
 
@@ -20,4 +33,37 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 2rem;
+}
+
+.heroBanner .hero__title {
+  font-size: 3rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+}
+
+.heroBanner .hero__subtitle {
+  font-size: 1.25rem;
+  color: #94a3b8;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 966px) {
+  .heroBanner {
+    padding: 4rem 0;
+  }
+  
+  .heroBanner .hero__title {
+    font-size: 2rem;
+  }
+  
+  .logo {
+    height: auto;
+    width: 50vw;
+  }
 }

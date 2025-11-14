@@ -1,5 +1,3 @@
-# Radian
-
 
 ## [Developer Guide](#developer-guide)
 

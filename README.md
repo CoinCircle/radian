@@ -1,8 +1,10 @@
 # Radian Protocol
 
-Radian protocol is a revolutionary autonomous decentralized finance protocol that provides a set of economic primitives designed to work with the Radian (RAD) token enabling features far beyond what is capable with CeFi systems while maintaining the trustlessness and decentralization of DeFi.
+Radian protocol is a revolutionary autonomous decentralized protocol that provides a set of economic primitives designed to work with the Radian (RAD) token.  Radian protocol's goal is to create a complete sustainable non-zero-sum crypto-economy capable of self-goverened autonomous growth enabling features far beyond what is capable with CeFi systems while maintaining the trustlessness and decentralization of DeFi.
 
 Built on zkSync Era with account abstraction capabilities, Radian enables gasless transactions, smart wallets, and a unified liquidity layer across trading, lending, and synthetic derivatives.
+
+Note: This is the in-progress v2 protocol codebase. The live v1 Radian (RAD) token code (currently deployed on the Ethereum Mainnet) can be found [here](https://github.com/CoinCircle/radian-token).
 
 ## 🏗️ Architecture
 
@@ -19,6 +21,13 @@ radian/
 ```
 
 ## 🧩 Core Modules
+
+### Radian Token v2 (RAD) & Collector
+- RAD represents the total value locked in the protocol
+- Non-transferable between wallets (only for governance and to/from protocol contracts)
+- Collector aggregates all protocol fees and locked value
+- Backs the USDX stablecoin
+- Multi-token model converts RAD <-> RADX liquidity token 1:1 for exiting protocol
 
 ### Smart Wallet & Paymaster
 - **Account Abstraction**: Interact without managing private keys or gas
@@ -49,13 +58,20 @@ radian/
 - Dynamic funding rates
 - Examples: temperature, volatility indices, sports scores, etc.
 
-### Radian Token (RAD) & Collector
-- RAD represents the total value locked in the protocol
-- Non-transferable between wallets (only to/from protocol contracts)
-- Collector aggregates all protocol fees and locked value
-- Backs the USDX stablecoin
+## 📚 Documentation
 
-## 🚀 Quick Start
+Full documentation is available at the [docs site](./apps/docs) or by running `cd apps/docs && npm start`.
+
+Key documentation:
+- [Protocol Overview](./apps/docs/docs/overview.md)
+- [Exchange Module](./apps/docs/docs/exchange/)
+- [Lending Module](./apps/docs/docs/lending/)
+- [Perpetuals Module](./apps/docs/docs/perpetuals/)
+- [Stablecoin Module](./apps/docs/docs/stablecoin/)
+- [Paymaster](./apps/docs/docs/paymaster/)
+- [Protocol Tokens](./apps/docs/docs/protocol-tokens/)
+
+## 🚀 Dev Quick Start
 
 ### Prerequisites
 
@@ -71,6 +87,9 @@ cd radian
 
 # Install dependencies
 yarn install
+
+# If you get build errors try running with ignore scripts:
+yarn install --ignore-scripts
 ```
 
 ### Running Components
@@ -85,9 +104,6 @@ cd packages/contracts
 # Copy environment variables
 cp .env.example .env
 # Edit .env with your MNEMONIC and INFURA_API_KEY
-
-# Install dependencies without running scripts
-yarn install  --ignore-scripts
 
 # Run tests
 forge test
@@ -108,55 +124,32 @@ npm run deploy
 #### DApp
 
 ```bash
-cd apps/dapp
+# From workspace root:
+# Option 1: From root (recommended)
+yarn workspace dapp dev
 
-# Install and run
-npm install
-npm run dev
+# Option 2: From dapp directory
+cd apps/dapp
+yarn dev
 
 # Open http://localhost:3000
 ```
 
+
 #### Documentation
 
 ```bash
-cd apps/docs
+# From workspace root:
+# Option 1: From root (recommended)
+yarn workspace docs start
 
-# Install and run
-npm install
-npm start
+# Option 2: From docs directory  
+cd apps/docs
+yarn start
 
 # Open http://localhost:4001
 ```
 
-#### Using Turbo (Monorepo-wide commands)
-
-```bash
-# Build all packages
-yarn build
-
-# Run all dev servers
-yarn dev
-
-# Lint all packages
-yarn lint
-
-# Clean all packages
-yarn clean
-```
-
-## 📚 Documentation
-
-Full documentation is available at the [docs site](./apps/docs) or by running `cd apps/docs && npm start`.
-
-Key documentation:
-- [Protocol Overview](./apps/docs/docs/overview.md)
-- [Exchange Module](./apps/docs/docs/exchange/)
-- [Lending Module](./apps/docs/docs/lending/)
-- [Perpetuals Module](./apps/docs/docs/perpetuals/)
-- [Stablecoin Module](./apps/docs/docs/stablecoin/)
-- [Paymaster](./apps/docs/docs/paymaster/)
-- [Protocol Tokens](./apps/docs/docs/protocol-tokens/)
 
 ## 🧪 Testing
 
@@ -169,9 +162,6 @@ forge test
 cd packages/contracts
 npm run test
 
-# Test DApp
-cd apps/dapp
-npm run test
 ```
 
 ## 📦 Deployments
@@ -185,8 +175,7 @@ This project uses:
 - **Hardhat** for integration tests and deployments
 - **Next.js** for the frontend
 - **Docusaurus** for documentation
-- **Turborepo** for monorepo management
-- **Yarn Workspaces** for dependency management
+- **Yarn Workspaces** for repo & dependency management
 
 ## 📄 License
 

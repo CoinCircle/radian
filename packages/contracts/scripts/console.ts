@@ -273,10 +273,12 @@ async function askForWallet(): Promise<Wallet | zksync.Wallet> {
 using zksync
 +++++
     `);
+
     const wallet =
-      network.name === `zksync-local`
-        ? new zksync.Wallet(`0x7726827caac94a7f9e1b160f7ea819f172f7b6f9d2a97f992c38edeab82d4110`)
-        : zksync.Wallet.fromMnemonic(accounts.mnemonic, accounts.path + `/${accountNumber - 1}`);
+    network.name === `zksync-local` && process.env.ZKSYNC_LOCAL_PRIVATE_KEY
+      ? new zksync.Wallet(process.env.ZKSYNC_LOCAL_PRIVATE_KEY)
+      : zksync.Wallet.fromMnemonic(accounts.mnemonic, accounts.path + `/${accountNumber - 1}`);
+
     return wallet.connect(
       new zksync.Provider(
         network.name === `zksync-local`
