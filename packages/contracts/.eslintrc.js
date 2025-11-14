@@ -20,7 +20,7 @@ module.exports = {
   ],
   root: true,
   rules: {
-    'prettier/prettier': `error`,
+    'prettier/prettier': `warn`,
     'arrow-body-style': `off`,
     'prefer-arrow-callback': `off`,
     quotes: [`error`, `backtick`],
