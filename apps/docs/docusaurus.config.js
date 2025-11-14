@@ -21,7 +21,7 @@ const config = {
   organizationName: 'coincircle', 
   projectName: 'radian',
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internalization, you can use this field to set useful
@@ -91,12 +91,12 @@ const config = {
             title: 'Docs',
             items: [
               {
-                label: 'Overview',
+                label: 'Get Started',
                 to: '/docs/overview',
               },
               {
-                label: 'Tutorial',
-                to: '/docs/intro',
+                label: 'Overview',
+                to: '/docs/overview',
               },
             ],
           },
