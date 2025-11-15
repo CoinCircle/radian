@@ -11,7 +11,7 @@ const config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://docs.radian.finance',
+  url: 'https://docs.radian.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
@@ -66,8 +66,10 @@ const config = {
       navbar: {
         // title: 'My Site',
         logo: {
-          alt: 'My Site Logo',
+          alt: 'Radian Protocol',
           src: 'img/logo.svg',
+          href: 'https://radian.io',
+          target: '_self',
         },
         items: [
           {

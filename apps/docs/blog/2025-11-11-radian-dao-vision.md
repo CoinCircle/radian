@@ -5,7 +5,7 @@ authors: [erick]
 tags: [radian, dao, governance, decentralization]
 ---
 
-As we enter 2025, Radian Protocol is embarking on a transformative journey toward complete decentralization. What started as a vision to build radical, autonomous, decentralized financial infrastructure is now evolving into a truly community-governed protocol.
+As we near the end of 2025, Radian Protocol is embarking on a transformative journey toward complete decentralization. What started as a vision to build radical, autonomous, decentralized financial infrastructure is now evolving into a truly community-governed protocol.
 
 <!--truncate-->
 
